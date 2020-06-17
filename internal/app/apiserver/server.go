@@ -10,8 +10,8 @@ import (
 	"time"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
-	"github.com/bahadylbekov/vacinex_api/internal/app/model"
-	"github.com/bahadylbekov/vacinex_api/internal/app/store"
+	"github.com/bahadylbekov/vaccinex_api/internal/app/model"
+	"github.com/bahadylbekov/vaccinex_api/internal/app/store"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
@@ -151,7 +151,11 @@ func (s *Server) authMiddleware() gin.HandlerFunc {
 			fmt.Println(err)
 			c.Abort()
 			c.Writer.WriteHeader(http.StatusUnauthorized)
-			c.Writer.Write([]byte("Unauthorized"))
+			_, err := c.Writer.Write([]byte("Unauthorized"))
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 			return
 		}
 		reqToken := c.Request.Header.Get("Authorization")
@@ -186,7 +190,10 @@ func extractIDFromToken(tokenStr string) interface{} {
 // handleUsersCreate ...
 func (s *Server) handleUsersCreate(c *gin.Context) {
 	var u *model.User
-	c.BindJSON(&u)
+	if err := c.BindJSON(&u); err != nil {
+		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
+		return
+	}
 
 	if err := s.store.User().Create(u); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
@@ -224,7 +231,7 @@ func (s *Server) logRequest() gin.HandlerFunc {
 			"completed with %d %s in %v",
 			c.Writer.Status(),
 			http.StatusText(c.Writer.Status()),
-			time.Now().Sub(start),
+			time.Since(start),
 		)
 	}
 }

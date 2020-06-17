@@ -3,8 +3,8 @@ package sqlstore
 import (
 	"database/sql"
 
-	"github.com/bahadylbekov/vacinex_api/internal/app/model"
-	"github.com/bahadylbekov/vacinex_api/internal/app/store"
+	"github.com/bahadylbekov/vaccinex_api/internal/app/model"
+	"github.com/bahadylbekov/vaccinex_api/internal/app/store"
 )
 
 // UserRepository ...

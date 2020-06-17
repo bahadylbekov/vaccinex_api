@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/bahadylbekov/vacinex_api/internal/app/model"
+	"github.com/bahadylbekov/vaccinex_api/internal/app/model"
 	"github.com/gin-gonic/gin"
 )
 

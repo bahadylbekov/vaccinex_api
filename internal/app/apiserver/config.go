@@ -13,6 +13,6 @@ func NewConfig() *Config {
 	return &Config{
 		BindAddress: ":8000",
 		LogLevel:    "debug",
-		DatabaseURL: "host=localhost dbname=vacinex_db sslmode=disable",
+		DatabaseURL: "host=localhost dbname=vaccinex_db sslmode=disable",
 	}
 }

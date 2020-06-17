@@ -1,7 +1,7 @@
 package sqlstore
 
 import (
-	"github.com/bahadylbekov/vacinex_api/internal/app/store"
+	"github.com/bahadylbekov/vaccinex_api/internal/app/store"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -10,6 +10,8 @@ type Store struct {
 	db                     *sqlx.DB
 	userRepository         *UserRepository
 	organizationRepository *OrganizationRepository
+	transactionRepository  *TransactionRepository
+	accountRepository      *AccountRepository
 }
 
 // New ...
@@ -43,4 +45,30 @@ func (s *Store) Organization() store.OrganizationRepository {
 	}
 
 	return s.organizationRepository
+}
+
+// Transaction ...
+func (s *Store) Transaction() store.TransactionRepository {
+	if s.transactionRepository != nil {
+		return s.transactionRepository
+	}
+
+	s.transactionRepository = &TransactionRepository{
+		store: s,
+	}
+
+	return s.transactionRepository
+}
+
+// Account ...
+func (s *Store) Account() store.AccountRepository {
+	if s.accountRepository != nil {
+		return s.accountRepository
+	}
+
+	s.accountRepository = &AccountRepository{
+		store: s,
+	}
+
+	return s.accountRepository
 }

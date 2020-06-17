@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/bahadylbekov/vacinex_api/internal/app/apiserver"
+	"github.com/bahadylbekov/vaccinex_api/internal/app/apiserver"
 )
 
 var (

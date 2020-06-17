@@ -3,7 +3,7 @@ package apiserver
 import (
 	"net/http"
 
-	"github.com/bahadylbekov/vacinex_api/internal/app/store/sqlstore"
+	"github.com/bahadylbekov/vaccinex_api/internal/app/store/sqlstore"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/jmoiron/sqlx"
 )

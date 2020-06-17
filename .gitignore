@@ -20,5 +20,5 @@ config/
 /Godeps/
 
 # Project private files
-vacinex_api
+vaccinex_api
 *.env

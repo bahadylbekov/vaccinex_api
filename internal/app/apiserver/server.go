@@ -61,7 +61,7 @@ func NewServer(store store.Store, sessionStore sessions.Store) *Server {
 			// 	return token, errors.New("Invalid audience")
 			// }
 			// Verify 'iss' claim
-			iss := "https://vacinex.auth0.com/"
+			iss := "https://vaccinex.auth0.com/"
 			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
 			if !checkIss {
 				return token, errors.New("Invalid issuer")
@@ -124,7 +124,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // configureRouter ..
 func (s *Server) configureRouter() {
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://vacinex.io", "http://localhost:8080"}
+	config.AllowOrigins = []string{"http://vaccinex.io", "http://localhost:8080"}
 	config.AllowHeaders = []string{"Authorization", "Origin", "Content-Length", "Content-Type"}
 
 	s.router.Use(s.SetRequestID())

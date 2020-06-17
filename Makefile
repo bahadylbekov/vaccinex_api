@@ -1,6 +1,6 @@
 .PHONY: build
 build:
-		go build -v ./cmd/vacinex_api/
+		go build -v ./cmd/vaccinex_api/
 
 .PHONY: test
 test:

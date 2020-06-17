@@ -3,8 +3,10 @@ RUN mkdir /app
 COPY . /app
 WORKDIR /app
 
+RUN apk add git
+RUN apk add --update make
 RUN go mod download
 
 RUN make build
 
-CMD ["/app/vaccinex_api"]
+CMD ["/vaccinex_api"]

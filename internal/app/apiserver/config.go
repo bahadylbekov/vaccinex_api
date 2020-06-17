@@ -17,7 +17,7 @@ type Config struct {
 
 // viperEnvVariable loads db information from .env file
 func viperEnvVariable(key string) string {
-	viper.SetConfigFile("../../../db.env")
+	viper.SetConfigFile("db.env")
 
 	err := viper.ReadInConfig()
 

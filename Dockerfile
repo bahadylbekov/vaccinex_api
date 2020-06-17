@@ -9,4 +9,4 @@ RUN go mod download
 
 RUN make build
 
-CMD ["/vaccinex_api"]
+CMD ["./vaccinex_api"]

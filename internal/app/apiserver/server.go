@@ -139,6 +139,22 @@ func (s *Server) configureRouter() {
 		private.POST("/profile", s.HandleProfileCreate)
 		private.GET("/profile", s.HandleGetMyProfile)
 		private.PUT("/profile", s.HandleUpdateProfile)
+		private.GET("/organizations", s.HandleGetConnectedOrganizations)
+		private.DELETE("/organizations", s.HandleDeleteOrganization)
+		private.GET("/organization", s.HandleGetOrganization)
+		private.GET("invite", s.HandleAddOrganizationToMyList)
+		private.GET("/search", s.HandleFindOrganizations)
+		private.POST("/transactions", s.HandleTransactionCreate)
+		private.GET("/transactions", s.HandleGetTransactions)
+		private.GET("/transactions/send", s.HandleGetSendTransactions)
+		private.GET("/transactions/recieved", s.HandleGetRecievedTransactions)
+		private.POST("/accounts", s.HandleAccountCreate)
+		private.GET("/accounts", s.HandleGetAccounts)
+		private.PUT("/accounts", s.HandleUpdateAccount)
+		private.POST("/accounts/deactivate", s.HandleDeactivateAccount)
+		private.POST("/accounts/reactivate", s.HandleReactivateAccount)
+		private.POST("/accounts/private", s.HandleMakeAccountPrivate)
+		private.POST("/accounts/unprivate", s.HandleMakeAccountUnprivate)
 	}
 }
 

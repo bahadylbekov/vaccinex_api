@@ -6,6 +6,7 @@ import (
 	"github.com/bahadylbekov/vaccinex_api/internal/app/store/sqlstore"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 // Start ...

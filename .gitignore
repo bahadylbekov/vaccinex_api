@@ -14,3 +14,11 @@
 # Dependency directories (remove the comment below to include it)
 vendor/
 config/
+
+### Go Patch ###
+/vendor/
+/Godeps/
+
+# Project private files
+vacinex_api
+*.env

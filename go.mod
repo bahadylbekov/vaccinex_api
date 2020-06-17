@@ -12,8 +12,11 @@ require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/google/uuid v1.1.1
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/lib/pq v1.7.0
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.6.0
+	github.com/spf13/viper v1.7.0
+	github.com/stretchr/objx v0.1.1 // indirect
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
 	google.golang.org/appengine v1.6.6 // indirect
 )

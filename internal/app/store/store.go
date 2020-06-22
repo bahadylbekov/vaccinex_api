@@ -6,6 +6,7 @@ type Store interface {
 	Organization() OrganizationRepository
 	TezosAccount() TezosAccountRepository
 	EthereumAccount() EthereumAccountRepository
+	NucypherAccount() NucypherAccountRepository
 	Transaction() TransactionRepository
 	Genome() GenomeRepository
 	Virus() VirusRepository

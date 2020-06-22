@@ -136,18 +136,22 @@ func (s *Server) configureRouter() {
 	private.Use(s.authMiddleware())
 	{
 		private.GET("/whoami", s.getMyUserID)
+
 		private.POST("/profile", s.HandleProfileCreate)
 		private.GET("/profile", s.HandleGetMyProfile)
 		private.PUT("/profile", s.HandleUpdateProfile)
+
 		private.GET("/organizations", s.HandleGetConnectedOrganizations)
 		private.DELETE("/organizations", s.HandleDeleteOrganization)
 		private.GET("/organization", s.HandleGetOrganization)
 		private.GET("invite", s.HandleAddOrganizationToMyList)
 		private.GET("/search", s.HandleFindOrganizations)
+
 		private.POST("/transactions", s.HandleTransactionCreate)
 		private.GET("/transactions", s.HandleGetTransactions)
 		private.GET("/transactions/send", s.HandleGetSendTransactions)
 		private.GET("/transactions/recieved", s.HandleGetRecievedTransactions)
+
 		private.POST("/tezos/accounts", s.HandleTezosAccountCreate)
 		private.GET("/tezos/accounts", s.HandleGetTezosAccounts)
 		private.PUT("/tezos/accounts", s.HandleUpdateTezosAccount)
@@ -155,6 +159,22 @@ func (s *Server) configureRouter() {
 		private.POST("/tezos/accounts/reactivate", s.HandleReactivateTezosAccount)
 		private.POST("/tezos/accounts/private", s.HandleMakeTezosAccountPrivate)
 		private.POST("/tezos/accounts/unprivate", s.HandleMakeTezosAccountUnprivate)
+
+		private.POST("/ethereum/accounts", s.HandleEthereumAccountCreate)
+		private.GET("/ethereum/accounts", s.HandleGetEthereumAccounts)
+		private.PUT("/ethereum/accounts", s.HandleUpdateEthereumAccount)
+		private.POST("/ethereum/accounts/deactivate", s.HandleDeactivateEthereumAccount)
+		private.POST("/ethereum/accounts/reactivate", s.HandleReactivateEthereumAccount)
+		private.POST("/ethereum/accounts/private", s.HandleMakeEthereumAccountPrivate)
+		private.POST("/ethereum/accounts/unprivate", s.HandleMakeEthereumAccountUnprivate)
+
+		private.POST("/nucypher/accounts", s.HandleNucypherAccountCreate)
+		private.GET("/nucypher/accounts", s.HandleGetNucypherAccounts)
+		private.PUT("/nucypher/accounts", s.HandleUpdateNucypherAccount)
+		private.POST("/nucypher/accounts/deactivate", s.HandleDeactivateNucypherAccount)
+		private.POST("/nucypher/accounts/reactivate", s.HandleReactivateNucypherAccount)
+		private.POST("/nucypher/accounts/private", s.HandleMakeNucypherAccountPrivate)
+		private.POST("/nucypher/accounts/unprivate", s.HandleMakeNucypherAccountUnprivate)
 	}
 }
 

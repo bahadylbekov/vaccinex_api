@@ -18,9 +18,25 @@ func (r *GenomeRepository) Create(g *model.Genome, now time.Time) error {
 	}
 
 	return r.store.db.QueryRow(
-		"INSERT INTO genomes (name, organization_name, file_url, virus_name, simularity_rate, origin, is_active, is_sold, created_by, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING organization_id",
+		`INSERT INTO genomes (name, 
+			organization_name, 
+			file_url, 
+			virus_name, 
+			simularity_rate, 
+			origin, 
+			is_active, 
+			is_sold, 
+			created_by, 
+			created_at)
+		VALUES ($1, 
+			(
+				SELECT name 
+				FROM organizations 
+				WHERE createdBy=$8
+			),
+			$3, $4, $5, $6, $7, $8, $9) 
+		RETURNING organization_id`,
 		g.Name,
-		g.OrganizationName,
 		g.FileUrl,
 		g.VirusName,
 		g.SimularityRate,
@@ -50,6 +66,19 @@ func (r *GenomeRepository) GetGenomes() ([]*model.Genome, error) {
 	var genomes []*model.Genome
 	if err := r.store.db.Select(&genomes,
 		"SELECT * from genomes",
+	); err != nil {
+		return nil, err
+	}
+
+	return genomes, nil
+}
+
+// GetGenomes returns all genomes for specific virus
+func (r *GenomeRepository) GetGenomesByVirus(virusID string) ([]*model.Genome, error) {
+	var genomes []*model.Genome
+	if err := r.store.db.Select(&genomes,
+		`SELECT * from genomes WHERE virus_name=(SELECT (name) FROM viruses WHERE virus_id=$1)`,
+		virusID,
 	); err != nil {
 		return nil, err
 	}

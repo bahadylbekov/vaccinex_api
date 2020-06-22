@@ -61,7 +61,7 @@ func NewServer(store store.Store, sessionStore sessions.Store) *Server {
 			// 	return token, errors.New("Invalid audience")
 			// }
 			// Verify 'iss' claim
-			iss := "https://vaccinex.auth0.com/"
+			iss := "https://vaccinex.us.auth0.com/"
 			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
 			if !checkIss {
 				return token, errors.New("Invalid issuer")
@@ -141,11 +141,21 @@ func (s *Server) configureRouter() {
 		private.GET("/profile", s.HandleGetMyProfile)
 		private.PUT("/profile", s.HandleUpdateProfile)
 
-		private.GET("/organizations", s.HandleGetConnectedOrganizations)
+		private.GET("/organizations", s.HandleGetOrganizations)
 		private.DELETE("/organizations", s.HandleDeleteOrganization)
-		private.GET("/organization", s.HandleGetOrganization)
+		private.GET("/organizations/:id", s.HandleGetOrganization)
 		private.GET("invite", s.HandleAddOrganizationToMyList)
 		private.GET("/search", s.HandleFindOrganizations)
+
+		private.GET("/viruses", s.HandleGetViruses)
+		private.GET("/viruses/:id", s.HandleGetVirusByID)
+		private.POST("/viruses", s.HandleVirusCreate)
+		private.PUT("/viruses", s.HandleUpdateVirus)
+
+		private.GET("/genomes", s.HandleGetGenomes)
+		private.GET("/genomes/:id", s.HandleGetGenomesByVirus)
+		private.POST("/genomes", s.HandleGenomeCreate)
+		private.GET("/genomes/my", s.HandleGetMyGenomes)
 
 		private.POST("/transactions", s.HandleTransactionCreate)
 		private.GET("/transactions", s.HandleGetTransactions)

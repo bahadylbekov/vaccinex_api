@@ -29,6 +29,8 @@ func (s *Server) HandleEthereumAccountCreate(c *gin.Context) {
 		"address":         a.Address,
 		"balance":         a.Balance,
 		"tokens":          a.Tokens,
+		"is_active":       a.IsActive,
+		"is_private":      a.IsPrivate,
 		"created_by":      a.CreatedBy,
 		"updated_by":      a.UpdatedBy,
 	})

@@ -144,7 +144,7 @@ func (r *OrganizationRepository) GetConnectedOrganizations(createdBy string) ([]
 func (r *OrganizationRepository) GetOrganizations() ([]*model.Organization, error) {
 	var organizations []*model.Organization
 	if err := r.store.db.Select(&organizations,
-		"SELECT * from counterparties",
+		"SELECT * from organizations",
 	); err != nil {
 		return nil, err
 	}

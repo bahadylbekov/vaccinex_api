@@ -66,7 +66,7 @@ func (s *Server) HandleGetOrganizations(c *gin.Context) {
 
 //HandleGetOrganization ...
 func (s *Server) HandleGetOrganization(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Param("id")
 	organization, err := s.store.Organization().GetOrganization(id)
 	if err != nil {
 		respondWithError(c, http.StatusInternalServerError, errInternalServerError)

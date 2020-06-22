@@ -57,6 +57,19 @@ func (r *VirusRepository) GetViruses() ([]*model.Virus, error) {
 	return viruses, nil
 }
 
+// GetVirus returns virus with genomes list
+func (r *VirusRepository) GetVirusByID(virusID string) (*model.Virus, error) {
+	var virus model.Virus
+
+	if err := r.store.db.QueryRowx("SELECT * FROM viruses WHERE virus_id=$1 LIMIT 1",
+		virusID,
+	).StructScan(&virus); err != nil {
+		return nil, err
+	}
+
+	return &virus, nil
+}
+
 // Update changes virus record in database
 func (r *VirusRepository) Update(v *model.Virus, now time.Time) error {
 

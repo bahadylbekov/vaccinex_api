@@ -73,11 +73,13 @@ type GenomeRepository interface {
 	Create(*model.Genome, time.Time) error
 	GetMyGenomes(string) ([]*model.Genome, error)
 	GetGenomes() ([]*model.Genome, error)
+	GetGenomesByVirus(string) ([]*model.Genome, error)
 }
 
 // VirusRepository ...
 type VirusRepository interface {
 	Create(*model.Virus, time.Time) error
 	GetViruses() ([]*model.Virus, error)
+	GetVirusByID(string) (*model.Virus, error)
 	Update(*model.Virus, time.Time) error
 }

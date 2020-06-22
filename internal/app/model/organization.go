@@ -28,7 +28,7 @@ type Organization struct {
 	UpdatedAt      time.Time `json:"updated_at,omitempty" db:"updated_at"`
 }
 
-// Organizations is an array of Counterparty objects
+// Organizations is an array of Organization objects
 type Organizations []Organization
 
 // Validate ...

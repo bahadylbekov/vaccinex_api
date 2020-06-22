@@ -54,6 +54,16 @@ func (s *Server) HandleGetConnectedOrganizations(c *gin.Context) {
 	c.JSON(http.StatusOK, organizations)
 }
 
+// HandleGetOrganizations ...
+func (s *Server) HandleGetOrganizations(c *gin.Context) {
+	organizations, err := s.store.Organization().GetOrganizations()
+	if err != nil {
+		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, organizations)
+}
+
 //HandleGetOrganization ...
 func (s *Server) HandleGetOrganization(c *gin.Context) {
 	id := c.Query("id")

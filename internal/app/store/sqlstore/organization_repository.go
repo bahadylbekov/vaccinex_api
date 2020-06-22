@@ -18,15 +18,18 @@ func (r *OrganizationRepository) Create(c *model.Organization, now time.Time) er
 	}
 
 	return r.store.db.QueryRow(
-		"INSERT INTO organizations (name, email, phone, website, country, city, street, postcode, regNum, regDate, is_active, created_by, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING organization_id",
+		"INSERT INTO organizations (name, email, photo_url, website, country, city, decription, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING organization_id",
 		c.Name,
 		c.Email,
-		c.Phone,
+		c.PhotoUrl,
 		c.Website,
 		c.Country,
 		c.City,
-		c.Street,
-		c.Postcode,
+		c.Decription,
+		c.Specialization,
+		c.Deals,
+		c.GenomesAmount,
+		c.FundedAmount,
 		c.IsActive,
 		c.CreatedBy,
 		now,
@@ -37,7 +40,7 @@ func (r *OrganizationRepository) Create(c *model.Organization, now time.Time) er
 func (r *OrganizationRepository) GetMyOrganization(createdBy string) (*model.Organization, error) {
 	var organization model.Organization
 
-	if err := r.store.db.QueryRowx("SELECT organization_id, name, email, phone, website, country, city, street, postcode, regnum, regdate, is_active, created_by, created_at FROM organizations WHERE created_by=$1 LIMIT 1",
+	if err := r.store.db.QueryRowx("SELECT organization_id, name, email, photo_url, website, country, city, decription, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at FROM organizations WHERE created_by=$1 LIMIT 1",
 		createdBy,
 	).StructScan(&organization); err != nil {
 		return nil, err
@@ -50,21 +53,24 @@ func (r *OrganizationRepository) GetMyOrganization(createdBy string) (*model.Org
 func (r *OrganizationRepository) Update(c *model.Organization, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE organizations 
-	SET name=:new_name, email=:new_email, phone=:new_phone, website=:new_website, country=:new_country, city=:new_city, street=:new_street, postcode=:new_postcode, regnum=:new_regnum, regdate=:new_regdate, is_active=:new_isActive, updated_by=:created, updated_at=:time
+	SET name=:new_name, email=:new_email, photo_url=:new_photo_url, website=:new_website, country=:new_country, city=:new_city, decription=:new_decription, specialization=:new_specialization, deals=:new_deals, genomes_amount=:new_genomes_amount, funded_amount=:new_funded_amount, is_active=:new_isActive, updated_by=:created, updated_at=:time
 	WHERE (created_by=:created AND organization_id=:id)`,
 		map[string]interface{}{
-			"id":           c.OrganizationID,
-			"new_name":     c.Name,
-			"new_email":    c.Email,
-			"new_phone":    c.Phone,
-			"new_website":  c.Website,
-			"new_country":  c.Country,
-			"new_city":     c.City,
-			"new_street":   c.Street,
-			"new_postcode": c.Postcode,
-			"new_isActive": c.IsActive,
-			"created":      c.CreatedBy,
-			"time":         now,
+			"id":                 c.OrganizationID,
+			"new_name":           c.Name,
+			"new_email":          c.Email,
+			"new_photo_url":      c.PhotoUrl,
+			"new_website":        c.Website,
+			"new_country":        c.Country,
+			"new_city":           c.City,
+			"new_decription":     c.Decription,
+			"new_specialization": c.Specialization,
+			"new_deals":          c.Deals,
+			"new_genomes_amount": c.GenomesAmount,
+			"new_funded_amount":  c.FundedAmount,
+			"new_isActive":       c.IsActive,
+			"created":            c.CreatedBy,
+			"time":               now,
 		})
 	if err != nil {
 		return err
@@ -134,11 +140,23 @@ func (r *OrganizationRepository) GetConnectedOrganizations(createdBy string) ([]
 	return organizations, nil
 }
 
-// GetOrganization returns organization with accounts and transactions list
+// GetOrganizations returns all organizations from database...
+func (r *OrganizationRepository) GetOrganizations() ([]*model.Organization, error) {
+	var organizations []*model.Organization
+	if err := r.store.db.Select(&organizations,
+		"SELECT * from counterparties",
+	); err != nil {
+		return nil, err
+	}
+
+	return organizations, nil
+}
+
+// GetOrganization returns organization with accounts and genomes list
 func (r *OrganizationRepository) GetOrganization(organizationID string) (*model.Organization, error) {
 	var organization model.Organization
-	var accounts []*model.Account
-	var transactions []*model.Transaction
+	// var accounts []*model.Account
+	// var transactions []*model.Transaction
 
 	if err := r.store.db.QueryRowx("SELECT organization_id, name, email, phone, website, country, city, street, postcode, regnum, regdate, is_active, created_by, created_at FROM organizations WHERE organization_id=$1 LIMIT 1",
 		organizationID,
@@ -146,26 +164,26 @@ func (r *OrganizationRepository) GetOrganization(organizationID string) (*model.
 		return nil, err
 	}
 
-	if err := r.store.db.Select(&accounts,
-		"SELECT account_id, organization_id, address, balance, tokens, openbalance, closebalance, created_by, name, is_active, created_at, is_private FROM accounts WHERE organization_id=$1",
-		organizationID,
-	); err != nil {
-		return &organization, err
-	}
+	// if err := r.store.db.Select(&accounts,
+	// 	"SELECT account_id, organization_id, address, balance, tokens, openbalance, closebalance, created_by, name, is_active, created_at, is_private FROM accounts WHERE organization_id=$1",
+	// 	organizationID,
+	// ); err != nil {
+	// 	return &organization, err
+	// }
 
-	organization.Accounts = accounts
+	// organization.Accounts = accounts
 
-	if err := r.store.db.Select(&transactions,
-		`SELECT * FROM transactions 
-		WHERE sender_account_id=(SELECT (account_id) FROM accounts WHERE organization_id=$1)
-		UNION SELECT * FROM transactions
-		WHERE recipient_account_id=(SELECT (account_id) FROM accounts WHERE organization_id=$1)`,
-		organizationID,
-	); err != nil {
-		return &organization, err
-	}
+	// if err := r.store.db.Select(&transactions,
+	// 	`SELECT * FROM transactions
+	// 	WHERE sender_account_id=(SELECT (account_id) FROM accounts WHERE organization_id=$1)
+	// 	UNION SELECT * FROM transactions
+	// 	WHERE recipient_account_id=(SELECT (account_id) FROM accounts WHERE organization_id=$1)`,
+	// 	organizationID,
+	// ); err != nil {
+	// 	return &organization, err
+	// }
 
-	organization.Transactions = transactions
+	// organization.Transactions = transactions
 
 	return &organization, nil
 }

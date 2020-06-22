@@ -4,6 +4,9 @@ package store
 type Store interface {
 	User() UserRepository
 	Organization() OrganizationRepository
-	Account() AccountRepository
+	TezosAccount() TezosAccountRepository
+	EthereumAccount() EthereumAccountRepository
 	Transaction() TransactionRepository
+	Genome() GenomeRepository
+	Virus() VirusRepository
 }

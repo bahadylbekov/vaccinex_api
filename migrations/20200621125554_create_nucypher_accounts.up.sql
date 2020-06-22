@@ -1,14 +1,13 @@
 BEGIN; 
 
-CREATE TABLE accounts (
+CREATE TABLE nucypher_accounts (
     account_id bigserial not null primary key,
     name text not null,
     organization_id int not null,
-    address varchar(255) not null unique,
+    address text not null unique,
+    verifying_key text unique,
     balance DECIMAL(10,2) not null,
     tokens DECIMAL(10,2) not null,
-    openBalance DECIMAL(10,2) not null,
-    closeBalance DECIMAL(10,2) not null,
     is_active bool not null DEFAULT true,
     is_private bool not null DEFAULT false,
     created_by text,

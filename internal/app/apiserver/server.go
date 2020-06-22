@@ -148,13 +148,13 @@ func (s *Server) configureRouter() {
 		private.GET("/transactions", s.HandleGetTransactions)
 		private.GET("/transactions/send", s.HandleGetSendTransactions)
 		private.GET("/transactions/recieved", s.HandleGetRecievedTransactions)
-		private.POST("/accounts", s.HandleAccountCreate)
-		private.GET("/accounts", s.HandleGetAccounts)
-		private.PUT("/accounts", s.HandleUpdateAccount)
-		private.POST("/accounts/deactivate", s.HandleDeactivateAccount)
-		private.POST("/accounts/reactivate", s.HandleReactivateAccount)
-		private.POST("/accounts/private", s.HandleMakeAccountPrivate)
-		private.POST("/accounts/unprivate", s.HandleMakeAccountUnprivate)
+		private.POST("/tezos/accounts", s.HandleTezosAccountCreate)
+		private.GET("/tezos/accounts", s.HandleGetTezosAccounts)
+		private.PUT("/tezos/accounts", s.HandleUpdateTezosAccount)
+		private.POST("/tezos/accounts/deactivate", s.HandleDeactivateTezosAccount)
+		private.POST("/tezos/accounts/reactivate", s.HandleReactivateTezosAccount)
+		private.POST("/tezos/accounts/private", s.HandleMakeTezosAccountPrivate)
+		private.POST("/tezos/accounts/unprivate", s.HandleMakeTezosAccountUnprivate)
 	}
 }
 

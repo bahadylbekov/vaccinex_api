@@ -7,11 +7,15 @@ import (
 
 // Store ..
 type Store struct {
-	db                     *sqlx.DB
-	userRepository         *UserRepository
-	organizationRepository *OrganizationRepository
-	transactionRepository  *TransactionRepository
-	accountRepository      *AccountRepository
+	db                        *sqlx.DB
+	userRepository            *UserRepository
+	organizationRepository    *OrganizationRepository
+	transactionRepository     *TransactionRepository
+	tezosAccountRepository    *TezosAccountRepository
+	ethereumAccountRepository *EthereumAccountRepository
+	nucypherAccountRepository *NucypherAccountRepository
+	genomeRepository          *GenomeRepository
+	virusRepository           *VirusRepository
 }
 
 // New ...
@@ -60,15 +64,67 @@ func (s *Store) Transaction() store.TransactionRepository {
 	return s.transactionRepository
 }
 
-// Account ...
-func (s *Store) Account() store.AccountRepository {
-	if s.accountRepository != nil {
-		return s.accountRepository
+// TezosAccount ...
+func (s *Store) TezosAccount() store.TezosAccountRepository {
+	if s.tezosAccountRepository != nil {
+		return s.tezosAccountRepository
 	}
 
-	s.accountRepository = &AccountRepository{
+	s.tezosAccountRepository = &TezosAccountRepository{
 		store: s,
 	}
 
-	return s.accountRepository
+	return s.tezosAccountRepository
+}
+
+// EthereumAccount ...
+func (s *Store) EthereumAccount() store.EthereumAccountRepository {
+	if s.ethereumAccountRepository != nil {
+		return s.ethereumAccountRepository
+	}
+
+	s.ethereumAccountRepository = &EthereumAccountRepository{
+		store: s,
+	}
+
+	return s.ethereumAccountRepository
+}
+
+// NucypherAccount ...
+func (s *Store) NucypherAccount() store.NucypherAccountRepository {
+	if s.nucypherAccountRepository != nil {
+		return s.nucypherAccountRepository
+	}
+
+	s.nucypherAccountRepository = &NucypherAccountRepository{
+		store: s,
+	}
+
+	return s.nucypherAccountRepository
+}
+
+// Genome ...
+func (s *Store) Genome() store.GenomeRepository {
+	if s.genomeRepository != nil {
+		return s.genomeRepository
+	}
+
+	s.genomeRepository = &GenomeRepository{
+		store: s,
+	}
+
+	return s.genomeRepository
+}
+
+// Virus ...
+func (s *Store) Virus() store.VirusRepository {
+	if s.virusRepository != nil {
+		return s.virusRepository
+	}
+
+	s.virusRepository = &VirusRepository{
+		store: s,
+	}
+
+	return s.virusRepository
 }

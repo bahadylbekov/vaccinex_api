@@ -6,14 +6,14 @@ import (
 	"github.com/bahadylbekov/vaccinex_api/internal/app/model"
 )
 
-// AccountRepository ...
-type AccountRepository struct {
+// TezosAccountRepository ...
+type TezosAccountRepository struct {
 	store *Store
 }
 
 // Create ...
-func (r *AccountRepository) Create(a *model.Account, now time.Time) error {
-	if err := a.Validate(); err != nil {
+func (r *TezosAccountRepository) Create(a *model.TezosAccount, now time.Time) error {
+	if err := a.ValidateTezos(); err != nil {
 		return err
 	}
 
@@ -22,28 +22,22 @@ func (r *AccountRepository) Create(a *model.Account, now time.Time) error {
 			address, 
 			balance, 
 			tokens, 
-			openBalance, 
-			closeBalance, 
 			created_by, 
 			name,
 			created_at) VALUES ((
 				SELECT organization_id 
 				FROM organizations 
-				WHERE createdBy=$6), 
+				WHERE createdBy=$4), 
 				$1, 
 				$2, 
 				$3, 
 				$4, 
 				$5, 
-				$6, 
-				$7,
-				$8) 
+				$6) 
 				RETURNING account_id`,
 		a.Address,
 		a.Balance,
 		a.Tokens,
-		a.OpenBalance,
-		a.CloseBalance,
 		a.CreatedBy,
 		a.Name,
 		now,
@@ -51,11 +45,11 @@ func (r *AccountRepository) Create(a *model.Account, now time.Time) error {
 }
 
 // GetAccounts ...
-func (r *AccountRepository) GetAccounts(createdBy string) ([]*model.Account, error) {
-	var accounts []*model.Account
+func (r *TezosAccountRepository) GetAccounts(createdBy string) ([]*model.TezosAccount, error) {
+	var accounts []*model.TezosAccount
 
 	if err := r.store.db.Select(&accounts,
-		"SELECT account_id, organization_id, address, balance, tokens, openbalance, closebalance, created_by, name, is_active, created_at, is_private  FROM accounts WHERE created_by=$1",
+		"SELECT account_id, organization_id, address, balance, tokens, created_by, name, is_active, created_at, is_private  FROM tezos_accounts WHERE created_by=$1",
 		createdBy,
 	); err != nil {
 		return nil, err
@@ -65,9 +59,9 @@ func (r *AccountRepository) GetAccounts(createdBy string) ([]*model.Account, err
 }
 
 // UpdateName updates name of organization
-func (r *AccountRepository) UpdateName(name string, updatedBy string, accountID int, now time.Time) error {
+func (r *TezosAccountRepository) UpdateName(name string, updatedBy string, accountID int, now time.Time) error {
 
-	_, err := r.store.db.NamedExec(`UPDATE accounts 
+	_, err := r.store.db.NamedExec(`UPDATE tezos_accounts 
 	SET name=:name, updated_by=:created, updated_at=:time
 	WHERE (created_by=:created AND account_id=:account_id)`,
 		map[string]interface{}{
@@ -85,9 +79,9 @@ func (r *AccountRepository) UpdateName(name string, updatedBy string, accountID 
 }
 
 // Deactivate updates is_active of account to false
-func (r *AccountRepository) Deactivate(updatedBy string, accountID int, now time.Time) error {
+func (r *TezosAccountRepository) Deactivate(updatedBy string, accountID int, now time.Time) error {
 
-	_, err := r.store.db.Exec(`UPDATE accounts 
+	_, err := r.store.db.Exec(`UPDATE tezos_accounts 
 	SET is_active=false, updated_by=$1, updated_at=$3 
 	WHERE (created_by=$1 AND account_id=$2)`,
 		updatedBy,
@@ -103,9 +97,9 @@ func (r *AccountRepository) Deactivate(updatedBy string, accountID int, now time
 }
 
 // Reactivate updates is_active of account to true
-func (r *AccountRepository) Reactivate(updatedBy string, accountID int, now time.Time) error {
+func (r *TezosAccountRepository) Reactivate(updatedBy string, accountID int, now time.Time) error {
 
-	_, err := r.store.db.NamedExec(`UPDATE accounts 
+	_, err := r.store.db.NamedExec(`UPDATE tezos_accounts 
 	SET is_active=true, updated_by=:created, updated_at=:time 
 	WHERE (created_by=:created AND account_id=:account_id AND is_active=false)`,
 		map[string]interface{}{
@@ -122,9 +116,9 @@ func (r *AccountRepository) Reactivate(updatedBy string, accountID int, now time
 }
 
 // Private updated is_private of account to true
-func (r *AccountRepository) Private(updatedBy string, accountID int, now time.Time) error {
+func (r *TezosAccountRepository) Private(updatedBy string, accountID int, now time.Time) error {
 
-	_, err := r.store.db.NamedExec(`UPDATE accounts 
+	_, err := r.store.db.NamedExec(`UPDATE tezos_accounts 
 	SET is_private=true, updated_by=:created, updated_at=:time 
 	WHERE (created_by=:created AND account_id=:account_id AND is_private=false)`,
 		map[string]interface{}{
@@ -140,9 +134,9 @@ func (r *AccountRepository) Private(updatedBy string, accountID int, now time.Ti
 }
 
 // Unprivate updated is_private of account to true
-func (r *AccountRepository) Unprivate(updatedBy string, accountID int, now time.Time) error {
+func (r *TezosAccountRepository) Unprivate(updatedBy string, accountID int, now time.Time) error {
 
-	_, err := r.store.db.NamedExec(`UPDATE accounts 
+	_, err := r.store.db.NamedExec(`UPDATE tezos_accounts 
 	SET is_private=false, updated_by=:created, updated_at=:time 
 	WHERE (created_by=:created AND account_id=:account_id AND is_private=true)`,
 		map[string]interface{}{

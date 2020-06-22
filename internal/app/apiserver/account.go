@@ -9,8 +9,8 @@ import (
 )
 
 // HandleAccountCreate ...
-func (s *Server) HandleAccountCreate(c *gin.Context) {
-	var a *model.Account
+func (s *Server) HandleTezosAccountCreate(c *gin.Context) {
+	var a *model.TezosAccount
 	if err := c.BindJSON(&a); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
 		return
@@ -19,7 +19,7 @@ func (s *Server) HandleAccountCreate(c *gin.Context) {
 	// a.CreatedAt = now
 
 	a.CreatedBy = c.Value("userID").(string)
-	if err := s.store.Account().Create(a, now); err != nil {
+	if err := s.store.TezosAccount().Create(a, now); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
 		return
 	}
@@ -29,17 +29,15 @@ func (s *Server) HandleAccountCreate(c *gin.Context) {
 		"address":         a.Address,
 		"balance":         a.Balance,
 		"tokens":          a.Tokens,
-		"openBalance":     a.OpenBalance,
-		"closeBalance":    a.CloseBalance,
 		"created_by":      a.CreatedBy,
 		"updated_by":      a.UpdatedBy,
 	})
 }
 
-// HandleGetAccounts ...
-func (s *Server) HandleGetAccounts(c *gin.Context) {
+// HandleGetTezosAccounts returns all tezos accounts for user
+func (s *Server) HandleGetTezosAccounts(c *gin.Context) {
 	createdBy := c.Value("userID").(string)
-	accounts, err := s.store.Account().GetAccounts(createdBy)
+	accounts, err := s.store.TezosAccount().GetAccounts(createdBy)
 	if err != nil {
 		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
 		return
@@ -47,8 +45,8 @@ func (s *Server) HandleGetAccounts(c *gin.Context) {
 	c.JSON(http.StatusOK, accounts)
 }
 
-// HandleUpdateAccount allow user update account name
-func (s *Server) HandleUpdateAccount(c *gin.Context) {
+// HandleUpdateTezosAccount allow user update account name
+func (s *Server) HandleUpdateTezosAccount(c *gin.Context) {
 	type repsonse struct {
 		Name      string    `json:"name"`
 		AccountID int       `json:"account_id"`
@@ -66,7 +64,7 @@ func (s *Server) HandleUpdateAccount(c *gin.Context) {
 	a.UpdatedAt = now
 	a.UpdatedBy = c.Value("userID").(string)
 
-	if err := s.store.Account().UpdateName(a.Name, a.UpdatedBy, a.AccountID, now); err != nil {
+	if err := s.store.TezosAccount().UpdateName(a.Name, a.UpdatedBy, a.AccountID, now); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
 		return
 	}
@@ -79,8 +77,8 @@ func (s *Server) HandleUpdateAccount(c *gin.Context) {
 	})
 }
 
-// HandleDeactivateAccount deactivates accounts
-func (s *Server) HandleDeactivateAccount(c *gin.Context) {
+// HandleDeactivateTezosAccount deactivates accounts
+func (s *Server) HandleDeactivateTezosAccount(c *gin.Context) {
 	type response struct {
 		AccountID int       `json:"account_id"`
 		CreatedBy string    `json:"created_by"`
@@ -103,7 +101,7 @@ func (s *Server) HandleDeactivateAccount(c *gin.Context) {
 		return
 	}
 
-	if err := s.store.Account().Deactivate(a.UpdatedBy, a.AccountID, now); err != nil {
+	if err := s.store.TezosAccount().Deactivate(a.UpdatedBy, a.AccountID, now); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
 		return
 	}
@@ -115,8 +113,8 @@ func (s *Server) HandleDeactivateAccount(c *gin.Context) {
 	})
 }
 
-// HandleReactivateAccount deactivates accounts
-func (s *Server) HandleReactivateAccount(c *gin.Context) {
+// HandleReactivateTezosAccount activates accounts
+func (s *Server) HandleReactivateTezosAccount(c *gin.Context) {
 	type response struct {
 		AccountID int       `json:"account_id"`
 		CreatedBy string    `json:"created_by"`
@@ -139,7 +137,7 @@ func (s *Server) HandleReactivateAccount(c *gin.Context) {
 		return
 	}
 
-	if err := s.store.Account().Reactivate(a.UpdatedBy, a.AccountID, now); err != nil {
+	if err := s.store.TezosAccount().Reactivate(a.UpdatedBy, a.AccountID, now); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
 		return
 	}
@@ -151,8 +149,8 @@ func (s *Server) HandleReactivateAccount(c *gin.Context) {
 	})
 }
 
-// HandleMakeAccountPrivate deactivates accounts
-func (s *Server) HandleMakeAccountPrivate(c *gin.Context) {
+// HandleMakeTezosAccountPrivate makes tezos accounts private
+func (s *Server) HandleMakeTezosAccountPrivate(c *gin.Context) {
 	type response struct {
 		AccountID int       `json:"account_id"`
 		CreatedBy string    `json:"created_by"`
@@ -175,7 +173,7 @@ func (s *Server) HandleMakeAccountPrivate(c *gin.Context) {
 		return
 	}
 
-	if err := s.store.Account().Private(a.UpdatedBy, a.AccountID, now); err != nil {
+	if err := s.store.TezosAccount().Private(a.UpdatedBy, a.AccountID, now); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
 		return
 	}
@@ -187,8 +185,8 @@ func (s *Server) HandleMakeAccountPrivate(c *gin.Context) {
 	})
 }
 
-// HandleMakeAccountUnprivate deactivates accounts
-func (s *Server) HandleMakeAccountUnprivate(c *gin.Context) {
+// HandleMakeTezosAccountUnprivate makes tezos accounts public
+func (s *Server) HandleMakeTezosAccountUnprivate(c *gin.Context) {
 	type response struct {
 		AccountID int       `json:"account_id"`
 		CreatedBy string    `json:"created_by"`
@@ -211,7 +209,7 @@ func (s *Server) HandleMakeAccountUnprivate(c *gin.Context) {
 		return
 	}
 
-	if err := s.store.Account().Unprivate(a.UpdatedBy, a.AccountID, now); err != nil {
+	if err := s.store.TezosAccount().Unprivate(a.UpdatedBy, a.AccountID, now); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
 		return
 	}

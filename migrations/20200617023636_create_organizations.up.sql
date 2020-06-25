@@ -17,7 +17,7 @@ CREATE TABLE organizations (
     created_by text unique,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_by text,
-    updated_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 COMMIT;

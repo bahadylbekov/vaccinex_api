@@ -12,6 +12,7 @@ type Genome struct {
 	Name             string    `json:"genome_name" db:"genome_name"`
 	OrganizationName string    `json:"organization_name" db:"organization_name"`
 	FileUrl          string    `json:"file_url" db:"file_url"`
+	Price            string    `json:"price" db:"price"`
 	VirusName        string    `json:"virus_name" db:"virus_name"`
 	SimularityRate   string    `json:"simularity_rate" db:"simularity_rate"`
 	Origin           string    `json:"origin" db:"origin"`

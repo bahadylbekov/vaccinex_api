@@ -28,6 +28,7 @@ func (s *Server) HandleGenomeCreate(c *gin.Context) {
 		"name":              g.Name,
 		"organization_name": g.OrganizationName,
 		"file_url":          g.FileUrl,
+		"price":             g.Price,
 		"virus_name":        g.VirusName,
 		"simularity_rate":   g.SimularityRate,
 		"origin":            g.Origin,

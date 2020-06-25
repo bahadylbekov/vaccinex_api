@@ -5,6 +5,7 @@ CREATE TABLE genomes (
     genome_name text not null,
     organization_name text not null REFERENCES organizations (organization_name),
     file_url text not null,
+    price text not null,
     virus_name text not null REFERENCES viruses (virus_name),
     simularity_rate text,
     origin text,

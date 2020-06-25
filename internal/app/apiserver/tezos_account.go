@@ -47,6 +47,17 @@ func (s *Server) HandleGetTezosAccounts(c *gin.Context) {
 	c.JSON(http.StatusOK, accounts)
 }
 
+// HandleGetTezosAccounts returns all tezos accounts for user
+func (s *Server) HandleGetTezosAccountForOrganization(c *gin.Context) {
+	id := c.Param("id")
+	accounts, err := s.store.TezosAccount().GetAccountOrganization(id)
+	if err != nil {
+		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, accounts)
+}
+
 // HandleUpdateTezosAccount allow user update account name
 func (s *Server) HandleUpdateTezosAccount(c *gin.Context) {
 	type repsonse struct {

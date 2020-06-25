@@ -165,6 +165,7 @@ func (s *Server) configureRouter() {
 
 		private.POST("/tezos/accounts", s.HandleTezosAccountCreate)
 		private.GET("/tezos/accounts", s.HandleGetTezosAccounts)
+		private.GET("/tezos/organization/accounts/:id", s.HandleGetTezosAccountForOrganization)
 		private.PUT("/tezos/accounts", s.HandleUpdateTezosAccount)
 		private.POST("/tezos/accounts/deactivate", s.HandleDeactivateTezosAccount)
 		private.POST("/tezos/accounts/reactivate", s.HandleReactivateTezosAccount)

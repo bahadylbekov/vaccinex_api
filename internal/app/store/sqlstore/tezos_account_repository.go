@@ -18,7 +18,7 @@ func (r *TezosAccountRepository) Create(a *model.TezosAccount, now time.Time) er
 	}
 
 	return r.store.db.QueryRow(
-		`INSERT INTO accounts (organization_id, 
+		`INSERT INTO tezos_accounts (organization_id, 
 			address, 
 			balance, 
 			tokens, 
@@ -27,7 +27,7 @@ func (r *TezosAccountRepository) Create(a *model.TezosAccount, now time.Time) er
 			created_at) VALUES ((
 				SELECT organization_id 
 				FROM organizations 
-				WHERE createdBy=$4), 
+				WHERE created_by=$4), 
 				$1, 
 				$2, 
 				$3, 
@@ -51,6 +51,20 @@ func (r *TezosAccountRepository) GetAccounts(createdBy string) ([]*model.TezosAc
 	if err := r.store.db.Select(&accounts,
 		"SELECT account_id, organization_id, address, balance, tokens, created_by, name, is_active, created_at, is_private  FROM tezos_accounts WHERE created_by=$1",
 		createdBy,
+	); err != nil {
+		return nil, err
+	}
+
+	return accounts, nil
+}
+
+// GetAccounts ...
+func (r *TezosAccountRepository) GetAccountOrganization(id string) ([]*model.TezosAccount, error) {
+	var accounts []*model.TezosAccount
+
+	if err := r.store.db.Select(&accounts,
+		"SELECT account_id, organization_id, address, balance, tokens, created_by, name, is_active, created_at, is_private FROM tezos_accounts WHERE organization_id=$1",
+		id,
 	); err != nil {
 		return nil, err
 	}

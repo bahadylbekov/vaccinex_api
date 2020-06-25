@@ -39,6 +39,7 @@ type TransactionRepository interface {
 type TezosAccountRepository interface {
 	Create(*model.TezosAccount, time.Time) error
 	GetAccounts(string) ([]*model.TezosAccount, error)
+	GetAccountOrganization(string) ([]*model.TezosAccount, error)
 	UpdateName(string, string, int, time.Time) error
 	Deactivate(string, int, time.Time) error
 	Reactivate(string, int, time.Time) error

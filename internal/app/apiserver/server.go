@@ -156,6 +156,7 @@ func (s *Server) configureRouter() {
 		private.GET("/genomes/:id", s.HandleGetGenomesByVirus)
 		private.POST("/genomes", s.HandleGenomeCreate)
 		private.GET("/genome", s.HandleGetMyGenomes)
+		private.GET("/organization-genome/:id", s.HandleGetGenomesByOrganization)
 
 		private.POST("/transactions", s.HandleTransactionCreate)
 		private.GET("/transactions", s.HandleGetTransactions)

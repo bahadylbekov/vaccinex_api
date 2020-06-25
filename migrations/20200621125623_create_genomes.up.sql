@@ -2,7 +2,7 @@ BEGIN;
 
 CREATE TABLE genomes (
     genome_id bigserial not null primary key,
-    name text not null,
+    genome_name text not null,
     organization_name text not null REFERENCES organizations (organization_name),
     file_url text not null,
     virus_name text not null REFERENCES viruses (virus_name),

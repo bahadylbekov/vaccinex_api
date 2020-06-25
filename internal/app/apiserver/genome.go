@@ -68,3 +68,14 @@ func (s *Server) HandleGetGenomesByVirus(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, genomes)
 }
+
+//HandleGetGenomesByOrganization returns all genomes for specific virus
+func (s *Server) HandleGetGenomesByOrganization(c *gin.Context) {
+	id := c.Param("id")
+	genomes, err := s.store.Genome().GetGenomesByOrganization(id)
+	if err != nil {
+		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, genomes)
+}

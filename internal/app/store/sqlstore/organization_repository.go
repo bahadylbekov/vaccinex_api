@@ -18,14 +18,14 @@ func (r *OrganizationRepository) Create(c *model.Organization, now time.Time) er
 	}
 
 	return r.store.db.QueryRow(
-		"INSERT INTO organizations (name, email, photo_url, website, country, city, decription, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING organization_id",
+		"INSERT INTO organizations (organization_name, email, photo_url, website, country, city, description, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING organization_id",
 		c.Name,
 		c.Email,
 		c.PhotoUrl,
 		c.Website,
 		c.Country,
 		c.City,
-		c.Decription,
+		c.Description,
 		c.Specialization,
 		c.Deals,
 		c.GenomesAmount,
@@ -37,23 +37,23 @@ func (r *OrganizationRepository) Create(c *model.Organization, now time.Time) er
 }
 
 // GetMyOrganization ...
-func (r *OrganizationRepository) GetMyOrganization(createdBy string) (*model.Organization, error) {
-	var organization model.Organization
+func (r *OrganizationRepository) GetMyOrganization(createdBy string) ([]*model.Organization, error) {
+	var organization []*model.Organization
 
-	if err := r.store.db.QueryRowx("SELECT organization_id, name, email, photo_url, website, country, city, decription, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at FROM organizations WHERE created_by=$1 LIMIT 1",
+	if err := r.store.db.Select(&organization, "SELECT organization_id, organization_name, email, photo_url, website, country, city, description, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at FROM organizations WHERE created_by=$1 LIMIT 1",
 		createdBy,
-	).StructScan(&organization); err != nil {
+	); err != nil {
 		return nil, err
 	}
 
-	return &organization, nil
+	return organization, nil
 }
 
 // Update changes organization record in database
 func (r *OrganizationRepository) Update(c *model.Organization, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE organizations 
-	SET name=:new_name, email=:new_email, photo_url=:new_photo_url, website=:new_website, country=:new_country, city=:new_city, decription=:new_decription, specialization=:new_specialization, deals=:new_deals, genomes_amount=:new_genomes_amount, funded_amount=:new_funded_amount, is_active=:new_isActive, updated_by=:created, updated_at=:time
+	SET organization_name=:new_name, email=:new_email, photo_url=:new_photo_url, website=:new_website, country=:new_country, city=:new_city, description=:new_description, specialization=:new_specialization, deals=:new_deals, genomes_amount=:new_genomes_amount, funded_amount=:new_funded_amount, is_active=:new_isActive, updated_by=:created, updated_at=:time
 	WHERE (created_by=:created AND organization_id=:id)`,
 		map[string]interface{}{
 			"id":                 c.OrganizationID,
@@ -63,7 +63,7 @@ func (r *OrganizationRepository) Update(c *model.Organization, now time.Time) er
 			"new_website":        c.Website,
 			"new_country":        c.Country,
 			"new_city":           c.City,
-			"new_decription":     c.Decription,
+			"new_description":    c.Description,
 			"new_specialization": c.Specialization,
 			"new_deals":          c.Deals,
 			"new_genomes_amount": c.GenomesAmount,
@@ -122,13 +122,13 @@ func (r *OrganizationRepository) AddOrganizationToMyList(myID string, organizati
 func (r *OrganizationRepository) GetConnectedOrganizations(createdBy string) ([]*model.Organization, error) {
 	var organizations []*model.Organization
 	if err := r.store.db.Select(&organizations,
-		`SELECT organizations.organization_id, name, email, phone, website, country, city, street, postcode, regnum, regdate, is_active, organizations.created_by, organizations.created_at
+		`SELECT organizations.organization_id, organization_name, email, website, country, city, street, postcode, regnum, regdate, is_active, organizations.created_by, organizations.created_at
 		FROM organizations
 		INNER JOIN connected_organizations 
 		ON organizations.organization_id=connected_organizations.id 
 		WHERE connected_organizations.organization_id=(SELECT organizations.organization_id FROM organizations WHERE organizations.created_by=$1)
 		UNION 
-		SELECT organizations.organization_id, name, email, phone, website, country, city, street, postcode, regnum, regdate, is_active, organizations.created_by, organizations.created_at
+		SELECT organizations.organization_id, organization_name, email, website, country, city, street, postcode, regnum, regdate, is_active, organizations.created_by, organizations.created_at
 		FROM organizations 
 		INNER JOIN connected_organizations 
 		ON organizations.organization_id=connected_organizations.organization_id 
@@ -144,7 +144,7 @@ func (r *OrganizationRepository) GetConnectedOrganizations(createdBy string) ([]
 func (r *OrganizationRepository) GetOrganizations() ([]*model.Organization, error) {
 	var organizations []*model.Organization
 	if err := r.store.db.Select(&organizations,
-		"SELECT * from organizations",
+		"SELECT organization_id, organization_name, email, photo_url, website, country, city, description, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at FROM organizations",
 	); err != nil {
 		return nil, err
 	}
@@ -152,38 +152,15 @@ func (r *OrganizationRepository) GetOrganizations() ([]*model.Organization, erro
 	return organizations, nil
 }
 
-// GetOrganization returns organization with accounts and genomes list
+// GetOrganization returns organization by organization id
 func (r *OrganizationRepository) GetOrganization(organizationID string) (*model.Organization, error) {
 	var organization model.Organization
-	// var accounts []*model.Account
-	// var transactions []*model.Transaction
 
-	if err := r.store.db.QueryRowx("SELECT organization_id, name, email, phone, website, country, city, street, postcode, regnum, regdate, is_active, created_by, created_at FROM organizations WHERE organization_id=$1 LIMIT 1",
+	if err := r.store.db.QueryRowx("SELECT organization_id, organization_name, email, photo_url, website, country, city, description, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at FROM organizations WHERE organization_id=$1 LIMIT 1",
 		organizationID,
 	).StructScan(&organization); err != nil {
 		return nil, err
 	}
-
-	// if err := r.store.db.Select(&accounts,
-	// 	"SELECT account_id, organization_id, address, balance, tokens, openbalance, closebalance, created_by, name, is_active, created_at, is_private FROM accounts WHERE organization_id=$1",
-	// 	organizationID,
-	// ); err != nil {
-	// 	return &organization, err
-	// }
-
-	// organization.Accounts = accounts
-
-	// if err := r.store.db.Select(&transactions,
-	// 	`SELECT * FROM transactions
-	// 	WHERE sender_account_id=(SELECT (account_id) FROM accounts WHERE organization_id=$1)
-	// 	UNION SELECT * FROM transactions
-	// 	WHERE recipient_account_id=(SELECT (account_id) FROM accounts WHERE organization_id=$1)`,
-	// 	organizationID,
-	// ); err != nil {
-	// 	return &organization, err
-	// }
-
-	// organization.Transactions = transactions
 
 	return &organization, nil
 }

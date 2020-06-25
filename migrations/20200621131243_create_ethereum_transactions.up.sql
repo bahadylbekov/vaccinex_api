@@ -16,7 +16,7 @@ CREATE TABLE ethereum_transactions (
     txStatus text not null,
     confirmations int,
     created_by text,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 COMMIT;

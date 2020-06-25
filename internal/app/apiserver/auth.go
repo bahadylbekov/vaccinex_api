@@ -48,7 +48,7 @@ func checkScope(scope string, tokenString string) bool {
 
 func getPemCert(token *jwt.Token) (string, error) {
 	cert := ""
-	resp, err := http.Get("https://vaccinex.auth0.com/.well-known/jwks.json")
+	resp, err := http.Get("https://vaccinex.us.auth0.com/.well-known/jwks.json")
 
 	if err != nil {
 		return cert, err

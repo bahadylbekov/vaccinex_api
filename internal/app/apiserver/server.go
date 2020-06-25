@@ -55,11 +55,11 @@ func NewServer(store store.Store, sessionStore sessions.Store) *Server {
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 			// Verify 'aud' claim
-			// aud := "http://localhost:8000"
-			// checkAud := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
-			// if !checkAud {
-			// 	return token, errors.New("Invalid audience")
-			// }
+			aud := "http://localhost:8000"
+			checkAud := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
+			if !checkAud {
+				return token, errors.New("Invalid audience")
+			}
 			// Verify 'iss' claim
 			iss := "https://vaccinex.us.auth0.com/"
 			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
@@ -124,7 +124,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // configureRouter ..
 func (s *Server) configureRouter() {
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://vaccinex.io", "http://localhost:8080"}
+	config.AllowOrigins = []string{"*", "http://localhost:4200"}
 	config.AllowHeaders = []string{"Authorization", "Origin", "Content-Length", "Content-Type"}
 
 	s.router.Use(s.SetRequestID())
@@ -155,7 +155,7 @@ func (s *Server) configureRouter() {
 		private.GET("/genomes", s.HandleGetGenomes)
 		private.GET("/genomes/:id", s.HandleGetGenomesByVirus)
 		private.POST("/genomes", s.HandleGenomeCreate)
-		private.GET("/genomes/my", s.HandleGetMyGenomes)
+		private.GET("/genome", s.HandleGetMyGenomes)
 
 		private.POST("/transactions", s.HandleTransactionCreate)
 		private.GET("/transactions", s.HandleGetTransactions)

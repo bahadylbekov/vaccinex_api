@@ -17,7 +17,7 @@ type UserRepository interface {
 type OrganizationRepository interface {
 	Create(*model.Organization, time.Time) error
 	GetOrganizations() ([]*model.Organization, error)
-	GetMyOrganization(string) (*model.Organization, error)
+	GetMyOrganization(string) ([]*model.Organization, error)
 	Update(*model.Organization, time.Time) error
 	FindOrganizationsByEmail(string) ([]*model.Organization, error)
 	AddOrganizationToMyList(string, string, string, time.Time) error

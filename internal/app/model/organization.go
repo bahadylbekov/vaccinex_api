@@ -10,18 +10,18 @@ import (
 // Organization structure the same as into database
 type Organization struct {
 	OrganizationID int       `json:"organization_id" db:"organization_id"`
-	Name           string    `json:"name" db:"name"`
+	Name           string    `json:"organization_name" db:"organization_name"`
 	Email          string    `json:"email" db:"email"`
-	PhotoUrl       string    `json:"photo_url" db:"photo-url"`
+	PhotoUrl       string    `json:"photo_url" db:"photo_url"`
 	Website        string    `json:"website" db:"website"`
 	Country        string    `json:"country" db:"country"`
 	City           string    `json:"city" db:"city"`
-	Decription     string    `json:"decription" db:"decription"`
+	Description    string    `json:"description" db:"description"`
 	Specialization string    `json:"specialization" db:"specialization"`
 	Deals          string    `json:"deals" db:"deals"`
 	GenomesAmount  string    `json:"genomes_amount" db:"genomes_amount"`
 	FundedAmount   string    `json:"funded_amount" db:"funded_amount"`
-	IsActive       bool      `json:"isActive" db:"is_active"`
+	IsActive       bool      `json:"is_active" db:"is_active"`
 	CreatedBy      string    `json:"created_by" db:"created_by"`
 	CreatedAt      time.Time `json:"created_at,omitempty"  db:"created_at"`
 	UpdatedBy      string    `json:"updated_by,omitempty" db:"updated_by"`

@@ -2,7 +2,7 @@ BEGIN;
 
 CREATE TABLE viruses (
     virus_id bigserial not null primary key,
-    name text not null,
+    virus_name varchar(255) not null UNIQUE,
     description text,
     photo_url text,
     family text,
@@ -13,7 +13,7 @@ CREATE TABLE viruses (
     created_by text,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_by text,
-    updated_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 COMMIT;

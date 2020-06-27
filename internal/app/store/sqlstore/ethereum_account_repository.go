@@ -18,7 +18,7 @@ func (r *EthereumAccountRepository) Create(a *model.EthereumAccount, now time.Ti
 	}
 
 	return r.store.db.QueryRow(
-		`INSERT INTO accounts (organization_id, 
+		`INSERT INTO ethereum_accounts (organization_id, 
 			address, 
 			balance, 
 			tokens, 
@@ -49,7 +49,7 @@ func (r *EthereumAccountRepository) GetAccounts(createdBy string) ([]*model.Ethe
 	var accounts []*model.EthereumAccount
 
 	if err := r.store.db.Select(&accounts,
-		"SELECT account_id, organization_id, address, balance, tokens, created_by, name, is_active, created_at, is_private  FROM ethereum_accounts WHERE created_by=$1",
+		"SELECT account_id, name, organization_id, address, balance, tokens, is_active, is_private, created_by, created_at FROM ethereum_accounts WHERE created_by=$1",
 		createdBy,
 	); err != nil {
 		return nil, err
@@ -58,17 +58,51 @@ func (r *EthereumAccountRepository) GetAccounts(createdBy string) ([]*model.Ethe
 	return accounts, nil
 }
 
-// UpdateName updates name of organization
+// GetAccountByOrganization returns all accounts for specific organization from database ...
+func (r *EthereumAccountRepository) GetAccountByOrganization(id string) ([]*model.EthereumAccount, error) {
+	var accounts []*model.EthereumAccount
+
+	if err := r.store.db.Select(&accounts,
+		"SELECT account_id, name, organization_id, address, balance, tokens, is_active, is_private, created_by, created_at FROM ethereum_accounts WHERE organization_id=$1",
+		id,
+	); err != nil {
+		return nil, err
+	}
+
+	return accounts, nil
+}
+
+// UpdateName updates name of ethereum account
 func (r *EthereumAccountRepository) UpdateName(name string, updatedBy string, accountID int, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE ethereum_accounts 
-	SET name=:name, updated_by=:created, updated_at=:time
-	WHERE (created_by=:created AND account_id=:account_id)`,
+	SET name=:name, updated_by=:updated_by, updated_at=:updated_at
+	WHERE (created_by=:updated_by AND account_id=:account_id)`,
 		map[string]interface{}{
 			"name":       name,
-			"created":    updatedBy,
+			"updated_by": updatedBy,
 			"account_id": accountID,
-			"time":       now,
+			"updated_at": now,
+		})
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// UpdateName updates address of ethereum account
+func (r *EthereumAccountRepository) UpdateAddress(address string, updatedBy string, accountID int, now time.Time) error {
+
+	_, err := r.store.db.NamedExec(`UPDATE ethereum_accounts 
+	SET address=:address, updated_by=:updated_by, updated_at=:updated_at
+	WHERE (created_by=:updated_by AND account_id=:account_id)`,
+		map[string]interface{}{
+			"address":    address,
+			"updated_by": updatedBy,
+			"account_id": accountID,
+			"updated_at": now,
 		})
 	if err != nil {
 		return err
@@ -100,12 +134,12 @@ func (r *EthereumAccountRepository) Deactivate(updatedBy string, accountID int, 
 func (r *EthereumAccountRepository) Reactivate(updatedBy string, accountID int, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE ethereum_accounts 
-	SET is_active=true, updated_by=:created, updated_at=:time 
-	WHERE (created_by=:created AND account_id=:account_id AND is_active=false)`,
+	SET is_active=true, updated_by=:updated_by, updated_at=:updated_at 
+	WHERE (created_by=:updated_by AND account_id=:account_id AND is_active=false)`,
 		map[string]interface{}{
-			"created":    updatedBy,
+			"updated_by": updatedBy,
 			"account_id": accountID,
-			"time":       now,
+			"updated_at": now,
 		})
 	if err != nil {
 		return err
@@ -119,12 +153,12 @@ func (r *EthereumAccountRepository) Reactivate(updatedBy string, accountID int, 
 func (r *EthereumAccountRepository) Private(updatedBy string, accountID int, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE ethereum_accounts 
-	SET is_private=true, updated_by=:created, updated_at=:time 
-	WHERE (created_by=:created AND account_id=:account_id AND is_private=false)`,
+	SET is_private=true, updated_by=:updated_by, updated_at=:updated_at 
+	WHERE (created_by=:updated_by AND account_id=:account_id AND is_private=false)`,
 		map[string]interface{}{
-			"created":    updatedBy,
+			"updated_by": updatedBy,
 			"account_id": accountID,
-			"time":       now,
+			"updated_at": now,
 		})
 	if err != nil {
 		return err
@@ -137,12 +171,12 @@ func (r *EthereumAccountRepository) Private(updatedBy string, accountID int, now
 func (r *EthereumAccountRepository) Unprivate(updatedBy string, accountID int, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE ethereum_accounts 
-	SET is_private=false, updated_by=:created, updated_at=:time 
-	WHERE (created_by=:created AND account_id=:account_id AND is_private=true)`,
+	SET is_private=false, updated_by=:updated_by, updated_at=:updated_at 
+	WHERE (created_by=:updated_by AND account_id=:account_id AND is_private=true)`,
 		map[string]interface{}{
-			"created":    updatedBy,
+			"updated_by": updatedBy,
 			"account_id": accountID,
-			"time":       now,
+			"updated_at": now,
 		})
 	if err != nil {
 		return err

@@ -18,7 +18,7 @@ func (r *NucypherAccountRepository) Create(a *model.NucypherAccount, now time.Ti
 	}
 
 	return r.store.db.QueryRow(
-		`INSERT INTO accounts (organization_id, 
+		`INSERT INTO nucypher_accounts (organization_id, 
 			address,
 			verifying_key,
 			balance, 
@@ -28,7 +28,7 @@ func (r *NucypherAccountRepository) Create(a *model.NucypherAccount, now time.Ti
 			created_at) VALUES ((
 				SELECT organization_id 
 				FROM organizations 
-				WHERE createdBy=$5), 
+				WHERE created_by=$5), 
 				$1, 
 				$2, 
 				$3, 
@@ -47,12 +47,12 @@ func (r *NucypherAccountRepository) Create(a *model.NucypherAccount, now time.Ti
 	).Scan(&a.AccountID)
 }
 
-// GetAccounts ...
+// GetAccounts returns all accounts for user from database...
 func (r *NucypherAccountRepository) GetAccounts(createdBy string) ([]*model.NucypherAccount, error) {
 	var accounts []*model.NucypherAccount
 
 	if err := r.store.db.Select(&accounts,
-		"SELECT account_id, organization_id, address, verifying_key, balance, tokens, created_by, name, is_active, created_at, is_private  FROM nucypher_accounts WHERE created_by=$1",
+		"SELECT account_id, name, organization_id, address, verifying_key, balance, tokens, is_active, is_private, created_by, created_at  FROM nucypher_accounts WHERE created_by=$1",
 		createdBy,
 	); err != nil {
 		return nil, err
@@ -61,17 +61,71 @@ func (r *NucypherAccountRepository) GetAccounts(createdBy string) ([]*model.Nucy
 	return accounts, nil
 }
 
-// UpdateName updates name of organization
+// GetAccountByOrganization returns all accounts for specific organization from database ...
+func (r *NucypherAccountRepository) GetAccountByOrganization(id string) ([]*model.NucypherAccount, error) {
+	var accounts []*model.NucypherAccount
+
+	if err := r.store.db.Select(&accounts,
+		"SELECT account_id, name, organization_id, address, verifying_key, balance, tokens, is_active, is_private, created_by, created_at  FROM nucypher_accounts WHERE organization_id=$1",
+		id,
+	); err != nil {
+		return nil, err
+	}
+
+	return accounts, nil
+}
+
+// UpdateName updates name of nucypher account
 func (r *NucypherAccountRepository) UpdateName(name string, updatedBy string, accountID int, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE nucypher_accounts 
-	SET name=:name, updated_by=:created, updated_at=:time
-	WHERE (created_by=:created AND account_id=:account_id)`,
+	SET name=:name, updated_by=:updated_by, updated_at=:updated_at
+	WHERE (created_by=:updated_by AND account_id=:account_id)`,
 		map[string]interface{}{
 			"name":       name,
-			"created":    updatedBy,
+			"updated_by": updatedBy,
 			"account_id": accountID,
-			"time":       now,
+			"updated_at": now,
+		})
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// UpdateName updates address of nucypher account
+func (r *NucypherAccountRepository) UpdateAddress(address string, updatedBy string, accountID int, now time.Time) error {
+
+	_, err := r.store.db.NamedExec(`UPDATE nucypher_accounts 
+	SET address=:address, updated_by=:updated_by, updated_at=:updated_at
+	WHERE (created_by=:updated_by AND account_id=:account_id)`,
+		map[string]interface{}{
+			"address":    address,
+			"updated_by": updatedBy,
+			"account_id": accountID,
+			"updated_at": now,
+		})
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// UpdateVerifyingKey updates address of nucypher account
+func (r *NucypherAccountRepository) UpdateVerifyingKey(verifying_key string, updatedBy string, accountID int, now time.Time) error {
+
+	_, err := r.store.db.NamedExec(`UPDATE nucypher_accounts 
+	SET verifying_key=:verifying_key, updated_by=:updated_by, updated_at=:updated_at
+	WHERE (created_by=:updated_by AND account_id=:account_id)`,
+		map[string]interface{}{
+			"verifying_key": verifying_key,
+			"updated_by":    updatedBy,
+			"account_id":    accountID,
+			"updated_at":    now,
 		})
 	if err != nil {
 		return err
@@ -103,12 +157,12 @@ func (r *NucypherAccountRepository) Deactivate(updatedBy string, accountID int, 
 func (r *NucypherAccountRepository) Reactivate(updatedBy string, accountID int, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE nucypher_accounts 
-	SET is_active=true, updated_by=:created, updated_at=:time 
-	WHERE (created_by=:created AND account_id=:account_id AND is_active=false)`,
+	SET is_active=true, updated_by=:updated_by, updated_at=:updated_at 
+	WHERE (created_by=:updated_by AND account_id=:account_id AND is_active=false)`,
 		map[string]interface{}{
-			"created":    updatedBy,
+			"updated_by": updatedBy,
 			"account_id": accountID,
-			"time":       now,
+			"updated_at": now,
 		})
 	if err != nil {
 		return err
@@ -122,12 +176,12 @@ func (r *NucypherAccountRepository) Reactivate(updatedBy string, accountID int, 
 func (r *NucypherAccountRepository) Private(updatedBy string, accountID int, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE nucypher_accounts 
-	SET is_private=true, updated_by=:created, updated_at=:time 
-	WHERE (created_by=:created AND account_id=:account_id AND is_private=false)`,
+	SET is_private=true, updated_by=:updated_by, updated_at=:updated_at 
+	WHERE (created_by=:updated_by AND account_id=:account_id AND is_private=false)`,
 		map[string]interface{}{
-			"created":    updatedBy,
+			"updated_by": updatedBy,
 			"account_id": accountID,
-			"time":       now,
+			"updated_at": now,
 		})
 	if err != nil {
 		return err
@@ -140,12 +194,12 @@ func (r *NucypherAccountRepository) Private(updatedBy string, accountID int, now
 func (r *NucypherAccountRepository) Unprivate(updatedBy string, accountID int, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE nucypher_accounts 
-	SET is_private=false, updated_by=:created, updated_at=:time 
-	WHERE (created_by=:created AND account_id=:account_id AND is_private=true)`,
+	SET is_private=false, updated_by=:updated_by, updated_at=:updated_at 
+	WHERE (created_by=:updated_by AND account_id=:account_id AND is_private=true)`,
 		map[string]interface{}{
-			"created":    updatedBy,
+			"updated_by": updatedBy,
 			"account_id": accountID,
-			"time":       now,
+			"updated_at": now,
 		})
 	if err != nil {
 		return err

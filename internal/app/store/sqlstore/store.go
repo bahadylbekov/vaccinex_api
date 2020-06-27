@@ -11,7 +11,6 @@ type Store struct {
 	userRepository            *UserRepository
 	organizationRepository    *OrganizationRepository
 	transactionRepository     *TransactionRepository
-	tezosAccountRepository    *TezosAccountRepository
 	ethereumAccountRepository *EthereumAccountRepository
 	nucypherAccountRepository *NucypherAccountRepository
 	genomeRepository          *GenomeRepository
@@ -62,19 +61,6 @@ func (s *Store) Transaction() store.TransactionRepository {
 	}
 
 	return s.transactionRepository
-}
-
-// TezosAccount ...
-func (s *Store) TezosAccount() store.TezosAccountRepository {
-	if s.tezosAccountRepository != nil {
-		return s.tezosAccountRepository
-	}
-
-	s.tezosAccountRepository = &TezosAccountRepository{
-		store: s,
-	}
-
-	return s.tezosAccountRepository
 }
 
 // EthereumAccount ...

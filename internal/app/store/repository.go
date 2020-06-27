@@ -35,23 +35,13 @@ type TransactionRepository interface {
 	GetRecievedTransactions(string) ([]*model.Transaction, error)
 }
 
-// TezosAccountRepository ...
-type TezosAccountRepository interface {
-	Create(*model.TezosAccount, time.Time) error
-	GetAccounts(string) ([]*model.TezosAccount, error)
-	GetAccountOrganization(string) ([]*model.TezosAccount, error)
-	UpdateName(string, string, int, time.Time) error
-	Deactivate(string, int, time.Time) error
-	Reactivate(string, int, time.Time) error
-	Private(string, int, time.Time) error
-	Unprivate(string, int, time.Time) error
-}
-
 // EthereumAccountRepository ...
 type EthereumAccountRepository interface {
 	Create(*model.EthereumAccount, time.Time) error
 	GetAccounts(string) ([]*model.EthereumAccount, error)
+	GetAccountByOrganization(string) ([]*model.EthereumAccount, error)
 	UpdateName(string, string, int, time.Time) error
+	UpdateAddress(string, string, int, time.Time) error
 	Deactivate(string, int, time.Time) error
 	Reactivate(string, int, time.Time) error
 	Private(string, int, time.Time) error
@@ -62,7 +52,10 @@ type EthereumAccountRepository interface {
 type NucypherAccountRepository interface {
 	Create(*model.NucypherAccount, time.Time) error
 	GetAccounts(string) ([]*model.NucypherAccount, error)
+	GetAccountByOrganization(string) ([]*model.NucypherAccount, error)
 	UpdateName(string, string, int, time.Time) error
+	UpdateAddress(string, string, int, time.Time) error
+	UpdateVerifyingKey(string, string, int, time.Time) error
 	Deactivate(string, int, time.Time) error
 	Reactivate(string, int, time.Time) error
 	Private(string, int, time.Time) error

@@ -47,6 +47,17 @@ func (s *Server) HandleGetEthereumAccounts(c *gin.Context) {
 	c.JSON(http.StatusOK, accounts)
 }
 
+// HandleGetEthereumAccountForOrganization returns all nucypher accounts for organization
+func (s *Server) HandleGetEthereumAccountForOrganization(c *gin.Context) {
+	id := c.Param("id")
+	accounts, err := s.store.EthereumAccount().GetAccountByOrganization(id)
+	if err != nil {
+		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, accounts)
+}
+
 // HandleUpdateEthereumAccount allow user update account name
 func (s *Server) HandleUpdateEthereumAccount(c *gin.Context) {
 	type repsonse struct {
@@ -73,6 +84,38 @@ func (s *Server) HandleUpdateEthereumAccount(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"name":       a.Name,
+		"account_id": a.AccountID,
+		"updated_by": a.UpdatedBy,
+		"updated_at": a.UpdatedAt,
+	})
+}
+
+// HandleUpdateEthereumAccountAddress allow user update account address
+func (s *Server) HandleUpdateEthereumAccountAddress(c *gin.Context) {
+	type repsonse struct {
+		Address   string    `json:"address"`
+		AccountID int       `json:"account_id"`
+		UpdatedBy string    `json:"updated_by"`
+		UpdatedAt time.Time `json:"updated_at"`
+	}
+	var a *repsonse
+
+	if err := c.BindJSON(&a); err != nil {
+		respondWithError(c, http.StatusBadRequest, errBadRequest)
+		return
+	}
+
+	now := time.Now()
+	a.UpdatedAt = now
+	a.UpdatedBy = c.Value("userID").(string)
+
+	if err := s.store.EthereumAccount().UpdateAddress(a.Address, a.UpdatedBy, a.AccountID, now); err != nil {
+		respondWithError(c, http.StatusBadRequest, errBadRequest)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"address":    a.Address,
 		"account_id": a.AccountID,
 		"updated_by": a.UpdatedBy,
 		"updated_at": a.UpdatedAt,

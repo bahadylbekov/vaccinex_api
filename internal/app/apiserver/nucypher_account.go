@@ -48,6 +48,17 @@ func (s *Server) HandleGetNucypherAccounts(c *gin.Context) {
 	c.JSON(http.StatusOK, accounts)
 }
 
+// HandleGetNucypherAccountForOrganization returns all nucypher accounts for organization
+func (s *Server) HandleGetNucypherAccountForOrganization(c *gin.Context) {
+	id := c.Param("id")
+	accounts, err := s.store.NucypherAccount().GetAccountByOrganization(id)
+	if err != nil {
+		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, accounts)
+}
+
 // HandleUpdateNucypherAccount allow user update account name
 func (s *Server) HandleUpdateNucypherAccount(c *gin.Context) {
 	type repsonse struct {
@@ -77,6 +88,70 @@ func (s *Server) HandleUpdateNucypherAccount(c *gin.Context) {
 		"account_id": a.AccountID,
 		"updated_by": a.UpdatedBy,
 		"updated_at": a.UpdatedAt,
+	})
+}
+
+// HandleUpdateNucypherAccount allow user update account address
+func (s *Server) HandleUpdateNucypherAccountAddress(c *gin.Context) {
+	type repsonse struct {
+		Address   string    `json:"address"`
+		AccountID int       `json:"account_id"`
+		UpdatedBy string    `json:"updated_by"`
+		UpdatedAt time.Time `json:"updated_at"`
+	}
+	var a *repsonse
+
+	if err := c.BindJSON(&a); err != nil {
+		respondWithError(c, http.StatusBadRequest, errBadRequest)
+		return
+	}
+
+	now := time.Now()
+	a.UpdatedAt = now
+	a.UpdatedBy = c.Value("userID").(string)
+
+	if err := s.store.NucypherAccount().UpdateAddress(a.Address, a.UpdatedBy, a.AccountID, now); err != nil {
+		respondWithError(c, http.StatusBadRequest, errBadRequest)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"address":    a.Address,
+		"account_id": a.AccountID,
+		"updated_by": a.UpdatedBy,
+		"updated_at": a.UpdatedAt,
+	})
+}
+
+// HandleUpdateNucypherAccountVerifyingKey allow user update account verifying key
+func (s *Server) HandleUpdateNucypherAccountVerifyingKey(c *gin.Context) {
+	type repsonse struct {
+		VerifyingKey string    `json:"verifying_key"`
+		AccountID    int       `json:"account_id"`
+		UpdatedBy    string    `json:"updated_by"`
+		UpdatedAt    time.Time `json:"updated_at"`
+	}
+	var a *repsonse
+
+	if err := c.BindJSON(&a); err != nil {
+		respondWithError(c, http.StatusBadRequest, errBadRequest)
+		return
+	}
+
+	now := time.Now()
+	a.UpdatedAt = now
+	a.UpdatedBy = c.Value("userID").(string)
+
+	if err := s.store.NucypherAccount().UpdateVerifyingKey(a.VerifyingKey, a.UpdatedBy, a.AccountID, now); err != nil {
+		respondWithError(c, http.StatusBadRequest, errBadRequest)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"verifying_key": a.VerifyingKey,
+		"account_id":    a.AccountID,
+		"updated_by":    a.UpdatedBy,
+		"updated_at":    a.UpdatedAt,
 	})
 }
 

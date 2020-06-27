@@ -18,7 +18,7 @@ func (r *GenomeRepository) Create(g *model.Genome, now time.Time) error {
 	}
 
 	return r.store.db.QueryRow(
-		`INSERT INTO genomes (genome_name, organization_name, file_url, price, virus_name, simularity_rate, origin, is_active, is_sold, created_by, created_at)
+		`INSERT INTO genomes (genome_name, organization_id, organization_name, vaccine_id, vaccine_name, file_url, price, virus_name, simularity_rate, origin, owner_account, is_active, is_sold, created_by, created_at)
 		VALUES ($1, (SELECT organization_name FROM organizations WHERE created_by=$9), $2, $3, $4, $5, $6, $7, $8, $9, $10) 
 		RETURNING genome_id`,
 		g.Name,
@@ -38,7 +38,7 @@ func (r *GenomeRepository) Create(g *model.Genome, now time.Time) error {
 func (r *GenomeRepository) GetMyGenomes(createdBy string) ([]*model.Genome, error) {
 	var genomes []*model.Genome
 	if err := r.store.db.Select(&genomes,
-		"SELECT genome_id, genome_name, organization_name, file_url, price, virus_name, simularity_rate, origin, is_active, is_sold, created_by, created_at FROM genomes WHERE created_by=$1",
+		"SELECT genome_id, genome_name, organization_id, organization_name, vaccine_id, vaccine_name, file_url, price, virus_name, simularity_rate, origin, owner_account, is_active, is_sold, created_by, created_at FROM genomes WHERE created_by=$1",
 		createdBy,
 	); err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (r *GenomeRepository) GetMyGenomes(createdBy string) ([]*model.Genome, erro
 func (r *GenomeRepository) GetGenomes() ([]*model.Genome, error) {
 	var genomes []*model.Genome
 	if err := r.store.db.Select(&genomes,
-		"SELECT genome_id, genome_name, organization_name, file_url, price, virus_name, simularity_rate, origin, is_active, is_sold, created_by, created_at FROM genomes",
+		"SELECT genome_id, genome_name, organization_id, organization_name, vaccine_id, vaccine_name, file_url, price, virus_name, simularity_rate, origin, owner_account, is_active, is_sold, created_by, created_at FROM genomes",
 	); err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (r *GenomeRepository) GetGenomes() ([]*model.Genome, error) {
 func (r *GenomeRepository) GetGenomesByVirus(virusID string) ([]*model.Genome, error) {
 	var genomes []*model.Genome
 	if err := r.store.db.Select(&genomes,
-		`SELECT genome_id, genome_name, organization_name, file_url, price, virus_name, simularity_rate, origin, is_active, is_sold, created_by, created_at FROM genomes WHERE virus_name=(SELECT (virus_name) FROM viruses WHERE virus_id=$1)`,
+		`SELECT genome_id, genome_name, organization_id, organization_name, vaccine_id, vaccine_name, file_url, price, virus_name, simularity_rate, origin, owner_account, is_active, is_sold, created_by, created_at FROM genomes WHERE virus_name=(SELECT (virus_name) FROM viruses WHERE virus_id=$1)`,
 		virusID,
 	); err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (r *GenomeRepository) GetGenomesByVirus(virusID string) ([]*model.Genome, e
 func (r *GenomeRepository) GetGenomesByOrganization(virusID string) ([]*model.Genome, error) {
 	var genomes []*model.Genome
 	if err := r.store.db.Select(&genomes,
-		`SELECT genome_id, genome_name, organization_name, file_url, price, virus_name, simularity_rate, origin, is_active, is_sold, created_by, created_at FROM genomes WHERE organization_name=(SELECT (organization_name) FROM organizations WHERE organization_id=$1)`,
+		`SELECT genome_id, genome_name, organization_id, organization_name, vaccine_id, vaccine_name, file_url, price, virus_name, simularity_rate, origin, owner_account, is_active, is_sold, created_by, created_at FROM genomes WHERE organization_name=(SELECT (organization_name) FROM organizations WHERE organization_id=$1)`,
 		virusID,
 	); err != nil {
 		return nil, err

@@ -37,7 +37,6 @@ func (o *Organization) Validate() error {
 		o,
 		validation.Field(&o.Name, validation.Required),
 		validation.Field(&o.Email, validation.Required, is.Email),
-		// validation.Field(&c.Country, validation.Required),
 	)
 }
 

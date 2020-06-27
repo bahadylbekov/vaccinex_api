@@ -15,6 +15,7 @@ type Store struct {
 	nucypherAccountRepository *NucypherAccountRepository
 	genomeRepository          *GenomeRepository
 	virusRepository           *VirusRepository
+	vaccineRepository         *VaccineRepository
 }
 
 // New ...
@@ -113,4 +114,17 @@ func (s *Store) Virus() store.VirusRepository {
 	}
 
 	return s.virusRepository
+}
+
+// Vaccine ...
+func (s *Store) Vaccine() store.VaccineRepository {
+	if s.vaccineRepository != nil {
+		return s.vaccineRepository
+	}
+
+	s.vaccineRepository = &VaccineRepository{
+		store: s,
+	}
+
+	return s.vaccineRepository
 }

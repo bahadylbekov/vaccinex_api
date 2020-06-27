@@ -9,4 +9,5 @@ type Store interface {
 	Transaction() TransactionRepository
 	Genome() GenomeRepository
 	Virus() VirusRepository
+	Vaccine() VaccineRepository
 }

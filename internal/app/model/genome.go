@@ -10,12 +10,16 @@ import (
 type Genome struct {
 	GenomeID         int       `json:"genome_id" db:"genome_id"`
 	Name             string    `json:"genome_name" db:"genome_name"`
+	OrganizationID   string    `json:"organization_id" db:"organization_id"`
 	OrganizationName string    `json:"organization_name" db:"organization_name"`
+	VaccineID        string    `json:"vaccine_id" db:"vaccine_id"`
+	VaccineName      string    `json:"vaccine_name" db:"vaccine_name"`
 	FileUrl          string    `json:"file_url" db:"file_url"`
 	Price            string    `json:"price" db:"price"`
 	VirusName        string    `json:"virus_name" db:"virus_name"`
 	SimularityRate   string    `json:"simularity_rate" db:"simularity_rate"`
 	Origin           string    `json:"origin" db:"origin"`
+	OwnerAccount     string    `json:"owner_account" db:"owner_account"`
 	IsActive         bool      `json:"is_active" db:"is_active"`
 	IsSold           bool      `json:"is_sold,omitempty" db:"is_sold"`
 	CreatedBy        string    `json:"created_by" db:"created_by"`

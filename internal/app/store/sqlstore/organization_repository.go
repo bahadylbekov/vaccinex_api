@@ -85,7 +85,7 @@ func (r *OrganizationRepository) FindOrganizationsByEmail(search string) ([]*mod
 	var organizations []*model.Organization
 
 	if err := r.store.db.Select(&organizations,
-		"SELECT * FROM organizations WHERE email LIKE $1",
+		"SELECT organization_id, organization_name, email, photo_url, website, country, city, description, specialization, deals, genomes_amount, funded_amount, is_active, created_by, created_at FROM organizations WHERE email LIKE $1",
 		"%"+search+"%",
 	); err != nil {
 		return nil, err

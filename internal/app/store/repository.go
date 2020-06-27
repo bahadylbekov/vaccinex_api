@@ -78,3 +78,13 @@ type VirusRepository interface {
 	GetVirusByID(string) (*model.Virus, error)
 	Update(*model.Virus, time.Time) error
 }
+
+// VaccineRepository ...
+type VaccineRepository interface {
+	Create(*model.Vaccine, time.Time) error
+	GetVaccines() ([]*model.Vaccine, error)
+	GetVaccineByID(string) (*model.Vaccine, error)
+	UpdateAmount(string, string, int, time.Time) error
+	UpdateName(string, string, int, time.Time) error
+	UpdateDescription(string, string, int, time.Time) error
+}

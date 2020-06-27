@@ -183,6 +183,13 @@ func (s *Server) configureRouter() {
 		private.POST("/nucypher/accounts/reactivate", s.HandleReactivateNucypherAccount)
 		private.POST("/nucypher/accounts/private", s.HandleMakeNucypherAccountPrivate)
 		private.POST("/nucypher/accounts/unprivate", s.HandleMakeNucypherAccountUnprivate)
+
+		private.GET("/vaccines", s.HandleGetVaccines)
+		private.GET("/vaccines/:id", s.HandleGetVaccineByID)
+		private.POST("/vaccines", s.HandleCreateVaccine)
+		private.PUT("/vaccines/name", s.HandleUpdateVaccineName)
+		private.PUT("/vaccines/description", s.HandleUpdateVaccineDescription)
+		private.PUT("/vaccines/amount", s.HandleUpdateVaccineAmount)
 	}
 }
 

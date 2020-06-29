@@ -69,6 +69,7 @@ type GenomeRepository interface {
 	GetGenomes() ([]*model.Genome, error)
 	GetGenomesByVirus(string) ([]*model.Genome, error)
 	GetGenomesByOrganization(string) ([]*model.Genome, error)
+	GetGenomesByVaccine(string) ([]*model.Genome, error)
 }
 
 // VirusRepository ...

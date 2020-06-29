@@ -84,3 +84,16 @@ func (r *GenomeRepository) GetGenomesByOrganization(virusID string) ([]*model.Ge
 
 	return genomes, nil
 }
+
+// GetGenomesByOrganization returns all genomes for specific organization
+func (r *GenomeRepository) GetGenomesByVaccine(vaccineID string) ([]*model.Genome, error) {
+	var genomes []*model.Genome
+	if err := r.store.db.Select(&genomes,
+		`SELECT genome_id, genome_name, organization_id, organization_name, vaccine_id, vaccine_name, file_url, price, virus_name, simularity_rate, origin, owner_account, is_active, is_sold, created_by, created_at FROM genomes WHERE vaccine_name=(SELECT (vaccine_name) FROM vaccines WHERE vaccine_id=$1)`,
+		vaccineID,
+	); err != nil {
+		return nil, err
+	}
+
+	return genomes, nil
+}

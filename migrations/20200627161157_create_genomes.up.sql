@@ -2,11 +2,11 @@ BEGIN;
 
 CREATE TABLE genomes (
     genome_id bigserial not null primary key,
-    genome_name text not null,
-    organization_id text not null REFERENCES organizations (organization_id),
+    genome_name text not null UNIQUE,
+    organization_id bigserial not null REFERENCES organizations (organization_id),
     organization_name text not null REFERENCES organizations (organization_name),
-    vaccine_id text REFERENCES vaccines (vaccine_id),
-    vaccine_name text REFERENCES vaccines (vaccine_name),
+    vaccine_id bigserial not null REFERENCES vaccines (vaccine_id),
+    vaccine_name text not null REFERENCES vaccines (vaccine_name),
     file_url text not null,
     price text not null,
     virus_name text not null REFERENCES viruses (virus_name),

@@ -2,8 +2,8 @@ BEGIN;
 
 CREATE TABLE vaccines (
     vaccine_id bigserial not null primary key,
-    vaccine_name text not null,
-    virus_id text not null REFERENCES viruses (virus_id),
+    vaccine_name text not null UNIQUE,
+    virus_id bigserial not null REFERENCES viruses (virus_id),
     virus_name text not null REFERENCES viruses (virus_name),
     description text,
     requested_amount text not null,

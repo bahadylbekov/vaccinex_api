@@ -80,3 +80,13 @@ func (s *Server) HandleGetGenomesByOrganization(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, genomes)
 }
+
+func (s *Server) HandleGetGenomesByVaccine(c *gin.Context) {
+	id := c.Param("id")
+	genomes, err := s.store.Genome().GetGenomesByVaccine(id)
+	if err != nil {
+		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, genomes)
+}

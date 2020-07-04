@@ -89,3 +89,13 @@ type VaccineRepository interface {
 	UpdateName(string, string, int, time.Time) error
 	UpdateDescription(string, string, int, time.Time) error
 }
+
+type NucypherPolicyRepository interface {
+	Create(*model.NucypherPolicy, time.Time) error
+	GetByID(string) (*model.NucypherPolicy, error)
+}
+
+type NucypherReceiptRepository interface {
+	Create(*model.NucypherReceipt, time.Time) error
+	GetByID(string) (*model.NucypherReceipt, error)
+}

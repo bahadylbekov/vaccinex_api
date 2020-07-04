@@ -191,6 +191,13 @@ func (s *Server) configureRouter() {
 		private.PUT("/vaccines/name", s.HandleUpdateVaccineName)
 		private.PUT("/vaccines/description", s.HandleUpdateVaccineDescription)
 		private.PUT("/vaccines/amount", s.HandleUpdateVaccineAmount)
+
+		private.POST("/policies", s.HandleCreatePolicy)
+		private.GET("/policies/:id", s.HandleGetPolicyByID)
+
+		private.POST("/receipts", s.HandleCreateReceipt)
+		private.GET("/receipts/:id", s.HandleGetReceiptByID)
+		private.GET("/receipts/hash/:hash", s.HandleGetReceiptByHash)
 	}
 }
 

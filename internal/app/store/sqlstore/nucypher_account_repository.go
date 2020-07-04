@@ -13,7 +13,7 @@ type NucypherAccountRepository struct {
 
 // Create ...
 func (r *NucypherAccountRepository) Create(a *model.NucypherAccount, now time.Time) error {
-	if err := a.ValidateNuCypher(); err != nil {
+	if err := a.Validate(); err != nil {
 		return err
 	}
 

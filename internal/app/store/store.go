@@ -10,4 +10,6 @@ type Store interface {
 	Genome() GenomeRepository
 	Virus() VirusRepository
 	Vaccine() VaccineRepository
+	NucypherPolicy() NucypherPolicyRepository
+	NucypherReceipt() NucypherReceiptRepository
 }

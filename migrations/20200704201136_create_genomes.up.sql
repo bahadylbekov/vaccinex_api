@@ -7,6 +7,7 @@ CREATE TABLE genomes (
     organization_name text not null REFERENCES organizations (organization_name),
     vaccine_id bigserial not null REFERENCES vaccines (vaccine_id),
     vaccine_name text not null REFERENCES vaccines (vaccine_name),
+    policy_id bigserial not null REFERENCES nucypher_policies (policy_id),
     file_url text not null,
     price text not null,
     virus_name text not null REFERENCES viruses (virus_name),

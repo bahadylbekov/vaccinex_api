@@ -16,6 +16,8 @@ type Store struct {
 	genomeRepository          *GenomeRepository
 	virusRepository           *VirusRepository
 	vaccineRepository         *VaccineRepository
+	policyRepository          *NucypherPolicyRepository
+	receiptRepository         *NucypherReceiptRepository
 }
 
 // New ...
@@ -127,4 +129,30 @@ func (s *Store) Vaccine() store.VaccineRepository {
 	}
 
 	return s.vaccineRepository
+}
+
+func (s *Store) NucypherPolicy() store.NucypherPolicyRepository {
+	if s.policyRepository != nil {
+		return s.policyRepository
+	}
+
+	s.policyRepository = &NucypherPolicyRepository{
+		store: s,
+	}
+
+	return s.policyRepository
+
+}
+
+func (s *Store) NucypherReceipt() store.NucypherReceiptRepository {
+	if s.receiptRepository != nil {
+		return s.receiptRepository
+	}
+
+	s.receiptRepository = &NucypherReceiptRepository{
+		store: s,
+	}
+
+	return s.receiptRepository
+
 }

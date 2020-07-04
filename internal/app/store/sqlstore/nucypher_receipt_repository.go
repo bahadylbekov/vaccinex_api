@@ -39,7 +39,7 @@ func (r *NucypherReceiptRepository) GetByID(receipt_id string) (*model.NucypherR
 
 }
 
-func (r *NucypherReceiptRepository) GetReceiptHash(hash string) (*model.NucypherReceipt, error) {
+func (r *NucypherReceiptRepository) GetReceiptByHash(hash string) (*model.NucypherReceipt, error) {
 	var receipt *model.NucypherReceipt
 
 	if err := r.store.db.QueryRowx("SELECT receipt_id, data_source_public_key, hash_key, created_by, created_at FROM nucypher_receipts WHERE hash_key=$1 LIMIT 1",

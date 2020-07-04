@@ -98,4 +98,5 @@ type NucypherPolicyRepository interface {
 type NucypherReceiptRepository interface {
 	Create(*model.NucypherReceipt, time.Time) error
 	GetByID(string) (*model.NucypherReceipt, error)
+	GetReceiptByHash(string) (*model.NucypherReceipt, error)
 }

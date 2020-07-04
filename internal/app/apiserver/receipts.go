@@ -46,7 +46,7 @@ func (s *Server) HandleGetReceiptByID(c *gin.Context) {
 // HandleGetReceiptByHash returns specific receipt data
 func (s *Server) HandleGetReceiptByHash(c *gin.Context) {
 	hash := c.Param("hash")
-	policy, err := s.store.NucypherPolicy().GetReceiptByHash(hash)
+	policy, err := s.store.NucypherReceipt().GetReceiptByHash(hash)
 	if err != nil {
 		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
 		return

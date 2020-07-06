@@ -27,7 +27,8 @@ func (s *Server) HandleNucypherAccountCreate(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"organization_id": a.OrganizationID,
 		"address":         a.Address,
-		"verifying_key":   a.VerifyingKey,
+		"signing_key":     a.SigningKey,
+		"encrypting_key":  a.EncryptingKey,
 		"balance":         a.Balance,
 		"tokens":          a.Tokens,
 		"is_active":       a.IsActive,

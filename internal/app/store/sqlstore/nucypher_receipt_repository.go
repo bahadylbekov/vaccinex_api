@@ -17,7 +17,7 @@ func (r *NucypherReceiptRepository) Create(receipt *model.NucypherReceipt, now t
 	}
 
 	return r.store.db.QueryRow(
-		`INSERT INTO nucypher_accounts (data_source_public_key, hash_key, created_by, 
+		`INSERT INTO nucypher_receipts (data_source_public_key, hash_key, created_by, 
 			created_at) VALUES ($1, $2, $3, $4) RETURNING receipt_id`,
 		receipt.EnricoPublicKey,
 		receipt.HashKey,
@@ -27,27 +27,29 @@ func (r *NucypherReceiptRepository) Create(receipt *model.NucypherReceipt, now t
 }
 
 func (r *NucypherReceiptRepository) GetByID(receipt_id string) (*model.NucypherReceipt, error) {
-	var receipt *model.NucypherReceipt
+	var receipt []*model.NucypherReceipt
 
-	if err := r.store.db.QueryRowx("SELECT receipt_id, data_source_public_key, hash_key, created_by, created_at FROM nucypher_receipts WHERE receipt_id=$1 LIMIT 1",
+	if err := r.store.db.Select(&receipt,
+		"SELECT receipt_id, data_source_public_key, hash_key, created_by, created_at FROM nucypher_receipts WHERE receipt_id=$1 LIMIT 1",
 		receipt_id,
-	).StructScan(receipt); err != nil {
+	); err != nil {
 		return nil, err
 	}
 
-	return receipt, nil
+	return receipt[0], nil
 
 }
 
 func (r *NucypherReceiptRepository) GetReceiptByHash(hash string) (*model.NucypherReceipt, error) {
-	var receipt *model.NucypherReceipt
+	var receipt []*model.NucypherReceipt
 
-	if err := r.store.db.QueryRowx("SELECT receipt_id, data_source_public_key, hash_key, created_by, created_at FROM nucypher_receipts WHERE hash_key=$1 LIMIT 1",
+	if err := r.store.db.Select(&receipt,
+		"SELECT receipt_id, data_source_public_key, hash_key, created_by, created_at FROM nucypher_receipts WHERE hash_key=$1 LIMIT 1",
 		hash,
-	).StructScan(receipt); err != nil {
+	); err != nil {
 		return nil, err
 	}
 
-	return receipt, nil
+	return receipt[0], nil
 
 }

@@ -18,7 +18,11 @@ func (r *VaccineRepository) Create(v *model.Vaccine, now time.Time) error {
 	}
 
 	return r.store.db.QueryRow(
-		"INSERT INTO viruses (vaccine_name, virus_id, virus_name, description, requested_amount, funded_amount, is_active, created_by, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING vaccine_id",
+		`INSERT INTO vaccines (vaccine_name, 
+			virus_id, virus_name, 
+			description, requested_amount, 
+			funded_amount, is_active, created_by, 
+			created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING vaccine_id`,
 		v.Name,
 		v.VirusID,
 		v.VirusName,
@@ -57,16 +61,17 @@ func (r *VaccineRepository) GetVaccines() ([]*model.Vaccine, error) {
 }
 
 // GetVaccineByID returns vaccine by specific ID
-func (r *VaccineRepository) GetVaccineByID(virusID string) (*model.Vaccine, error) {
-	var vaccine model.Vaccine
+func (r *VaccineRepository) GetVaccineByID(virusID string) ([]*model.Vaccine, error) {
+	var vaccines []*model.Vaccine
 
-	if err := r.store.db.QueryRowx("SELECT vaccine_id, vaccine_name, virus_id, virus_name, description, requested_amount, funded_amount, is_active, created_by, created_at FROM viruses WHERE virus_id=$1 LIMIT 1",
+	if err := r.store.db.Select(&vaccines,
+		"SELECT vaccine_id, vaccine_name, virus_id, virus_name, description, requested_amount, funded_amount, is_active, created_by, created_at FROM vaccines WHERE virus_id=$1",
 		virusID,
-	).StructScan(&vaccine); err != nil {
+	); err != nil {
 		return nil, err
 	}
 
-	return &vaccine, nil
+	return vaccines, nil
 }
 
 // UpdateAmount changes vaccine's funded amount in database

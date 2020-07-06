@@ -18,6 +18,7 @@ type Store struct {
 	vaccineRepository         *VaccineRepository
 	policyRepository          *NucypherPolicyRepository
 	receiptRepository         *NucypherReceiptRepository
+	requestedGrantRepository  *RequestedGrantsRepository
 }
 
 // New ...
@@ -154,5 +155,18 @@ func (s *Store) NucypherReceipt() store.NucypherReceiptRepository {
 	}
 
 	return s.receiptRepository
+
+}
+
+func (s *Store) Grants() store.RequestedGrantsRepository {
+	if s.requestedGrantRepository != nil {
+		return s.requestedGrantRepository
+	}
+
+	s.requestedGrantRepository = &RequestedGrantsRepository{
+		store: s,
+	}
+
+	return s.requestedGrantRepository
 
 }

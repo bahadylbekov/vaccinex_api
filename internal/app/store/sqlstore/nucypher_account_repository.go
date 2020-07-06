@@ -20,7 +20,8 @@ func (r *NucypherAccountRepository) Create(a *model.NucypherAccount, now time.Ti
 	return r.store.db.QueryRow(
 		`INSERT INTO nucypher_accounts (organization_id, 
 			address,
-			verifying_key,
+			signing_key,
+			encrypting_key,
 			balance, 
 			tokens, 
 			created_by, 
@@ -28,17 +29,19 @@ func (r *NucypherAccountRepository) Create(a *model.NucypherAccount, now time.Ti
 			created_at) VALUES ((
 				SELECT organization_id 
 				FROM organizations 
-				WHERE created_by=$5), 
+				WHERE created_by=$6), 
 				$1, 
 				$2, 
 				$3, 
 				$4, 
 				$5, 
 				$6,
-				$7) 
+				$7,
+				$8) 
 				RETURNING account_id`,
 		a.Address,
-		a.VerifyingKey,
+		a.SigningKey,
+		a.EncryptingKey,
 		a.Balance,
 		a.Tokens,
 		a.CreatedBy,
@@ -52,7 +55,7 @@ func (r *NucypherAccountRepository) GetAccounts(createdBy string) ([]*model.Nucy
 	var accounts []*model.NucypherAccount
 
 	if err := r.store.db.Select(&accounts,
-		"SELECT account_id, name, organization_id, address, verifying_key, balance, tokens, is_active, is_private, created_by, created_at  FROM nucypher_accounts WHERE created_by=$1",
+		"SELECT account_id, name, organization_id, address, signing_key, encrypting_key, balance, tokens, is_active, is_private, created_by, created_at  FROM nucypher_accounts WHERE created_by=$1",
 		createdBy,
 	); err != nil {
 		return nil, err
@@ -66,7 +69,7 @@ func (r *NucypherAccountRepository) GetAccountByOrganization(id string) ([]*mode
 	var accounts []*model.NucypherAccount
 
 	if err := r.store.db.Select(&accounts,
-		"SELECT account_id, name, organization_id, address, verifying_key, balance, tokens, is_active, is_private, created_by, created_at  FROM nucypher_accounts WHERE organization_id=$1",
+		"SELECT account_id, name, organization_id, address, signing_key, encrypting_key, balance, tokens, is_active, is_private, created_by, created_at  FROM nucypher_accounts WHERE organization_id=$1",
 		id,
 	); err != nil {
 		return nil, err

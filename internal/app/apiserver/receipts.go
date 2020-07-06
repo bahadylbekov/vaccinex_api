@@ -35,7 +35,7 @@ func (s *Server) HandleCreateReceipt(c *gin.Context) {
 // HandleGetReceiptByID returns specific receipt data
 func (s *Server) HandleGetReceiptByID(c *gin.Context) {
 	id := c.Param("id")
-	policy, err := s.store.NucypherPolicy().GetByID(id)
+	policy, err := s.store.NucypherReceipt().GetByID(id)
 	if err != nil {
 		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
 		return
@@ -45,11 +45,19 @@ func (s *Server) HandleGetReceiptByID(c *gin.Context) {
 
 // HandleGetReceiptByHash returns specific receipt data
 func (s *Server) HandleGetReceiptByHash(c *gin.Context) {
-	hash := c.Param("hash")
-	policy, err := s.store.NucypherReceipt().GetReceiptByHash(hash)
+	type repsonse struct {
+		Hash string `json:"hash"`
+	}
+	var g *repsonse
+
+	if err := c.BindJSON(&g); err != nil {
+		respondWithError(c, http.StatusBadRequest, errBadRequest)
+		return
+	}
+	receipt, err := s.store.NucypherReceipt().GetReceiptByHash(g.Hash)
 	if err != nil {
 		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
 		return
 	}
-	c.JSON(http.StatusOK, policy)
+	c.JSON(http.StatusOK, receipt)
 }

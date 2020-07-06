@@ -197,7 +197,11 @@ func (s *Server) configureRouter() {
 
 		private.POST("/receipts", s.HandleCreateReceipt)
 		private.GET("/receipts/:id", s.HandleGetReceiptByID)
-		private.GET("/receipts/hash/:hash", s.HandleGetReceiptByHash)
+
+		private.POST("/grants", s.HandleCreateGrant)
+		private.GET("/grants/:id", s.HandleGetGrantsForMe)
+		private.GET("/completed/grants", s.HandleGetCompletedGrantsForMe)
+		private.PUT("/grants", s.HandleSubmitGrant)
 	}
 }
 

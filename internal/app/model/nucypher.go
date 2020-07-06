@@ -13,7 +13,8 @@ type NucypherAccount struct {
 	Name           string          `json:"name" db:"name"`
 	OrganizationID int             `json:"organization_id" db:"organization_id"`
 	Address        string          `json:"address" db:"address"`
-	VerifyingKey   string          `json:"verifying_key" db:"verifying_key"`
+	SigningKey     string          `json:"signing_key" db:"signing_key"`
+	EncryptingKey  string          `json:"encrypting_key" db:"encrypting_key"`
 	Balance        decimal.Decimal `json:"balance" db:"balance"`
 	Tokens         decimal.Decimal `json:"tokens" db:"tokens"`
 	IsActive       bool            `json:"is_active" db:"is_active"`
@@ -33,7 +34,8 @@ func (a *NucypherAccount) Validate() error {
 		a,
 		validation.Field(&a.Address, validation.Required),
 		validation.Field(&a.Balance, validation.Required),
-		validation.Field(&a.VerifyingKey, validation.Required),
+		validation.Field(&a.SigningKey, validation.Required),
+		validation.Field(&a.EncryptingKey, validation.Required),
 	)
 }
 

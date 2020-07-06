@@ -10,7 +10,7 @@ import (
 type Vaccine struct {
 	VaccineID       int       `json:"vaccine_id" db:"vaccine_id"`
 	Name            string    `json:"vaccine_name" db:"vaccine_name"`
-	VirusID         string    `json:"virus_id" db:"virus_id"`
+	VirusID         int       `json:"virus_id" db:"virus_id"`
 	VirusName       string    `json:"virus_name" db:"virus_name"`
 	Description     string    `json:"description" db:"description"`
 	RequestedAmount string    `json:"requested_amount" db:"requested_amount"`

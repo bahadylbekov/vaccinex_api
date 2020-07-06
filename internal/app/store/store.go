@@ -12,4 +12,5 @@ type Store interface {
 	Vaccine() VaccineRepository
 	NucypherPolicy() NucypherPolicyRepository
 	NucypherReceipt() NucypherReceiptRepository
+	Grants() RequestedGrantsRepository
 }

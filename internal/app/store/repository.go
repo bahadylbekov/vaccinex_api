@@ -84,7 +84,7 @@ type VirusRepository interface {
 type VaccineRepository interface {
 	Create(*model.Vaccine, time.Time) error
 	GetVaccines() ([]*model.Vaccine, error)
-	GetVaccineByID(string) (*model.Vaccine, error)
+	GetVaccineByID(string) ([]*model.Vaccine, error)
 	UpdateAmount(string, string, int, time.Time) error
 	UpdateName(string, string, int, time.Time) error
 	UpdateDescription(string, string, int, time.Time) error
@@ -93,10 +93,18 @@ type VaccineRepository interface {
 type NucypherPolicyRepository interface {
 	Create(*model.NucypherPolicy, time.Time) error
 	GetByID(string) (*model.NucypherPolicy, error)
+	GetByLabel(string) (*model.NucypherPolicy, error)
 }
 
 type NucypherReceiptRepository interface {
 	Create(*model.NucypherReceipt, time.Time) error
 	GetByID(string) (*model.NucypherReceipt, error)
 	GetReceiptByHash(string) (*model.NucypherReceipt, error)
+}
+
+type RequestedGrantsRepository interface {
+	Create(*model.RequestedGrant, time.Time) error
+	Submit(bool, string, string, time.Time) error
+	GetGrantsForMe(string) ([]*model.RequestedGrant, error)
+	GetCompletedGrantsForMe(string) ([]*model.RequestedGrant, error)
 }

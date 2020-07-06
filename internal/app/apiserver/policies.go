@@ -43,3 +43,23 @@ func (s *Server) HandleGetPolicyByID(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, policy)
 }
+
+// HandleGetPolicyByLabel returns specific receipt data
+func (s *Server) HandleGetPolicyByLabel(c *gin.Context) {
+	type repsonse struct {
+		Label string `json:"label"`
+	}
+	var g *repsonse
+
+	if err := c.BindJSON(&g); err != nil {
+		respondWithError(c, http.StatusBadRequest, errBadRequest)
+		return
+	}
+
+	policy, err := s.store.NucypherPolicy().GetByLabel(g.Label)
+	if err != nil {
+		respondWithError(c, http.StatusInternalServerError, errInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, policy)
+}

@@ -14,5 +14,11 @@ WARNING! Building happen only when this project locates outside of GOPATH enviro
 
 1. Clone this repository
 2. Create db.env file in a repository root directory and provide postgres database name, username and password
-3. Run docker container by typing `docker-compose -f "docker-compose.yml" up -d --build`
-4. Check port :8000
+3. Build docker container by typing `docker-compose -f "docker-compose.yml" up -d --build`
+4. Run migrations by typing `make migrations`
+5. Check port :8000
+
+## Example db.env file
+* POSTGRES_USER="postgres"
+* POSTGRES_PASSWORD="password" 
+* POSTGRES_DB="test_db"

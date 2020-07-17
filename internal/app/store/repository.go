@@ -104,7 +104,7 @@ type NucypherReceiptRepository interface {
 
 type RequestedGrantsRepository interface {
 	Create(*model.RequestedGrant, time.Time) error
-	Submit(bool, string, string, time.Time) error
+	Submit(bool, string, string, string, time.Time) error
 	GetGrantsForMe(string) ([]*model.RequestedGrant, error)
 	GetCompletedGrantsForMe(string) ([]*model.RequestedGrant, error)
 }

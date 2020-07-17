@@ -65,8 +65,9 @@ func (s *Server) HandleGetCompletedGrantsForMe(c *gin.Context) {
 // HandleSubmitGrant allow user submit grant
 func (s *Server) HandleSubmitGrant(c *gin.Context) {
 	type response struct {
-		IsActive bool   `json:"is_active"`
-		HashKey  string `json:"hash_key"`
+		IsActive  bool   `json:"is_active"`
+		CreatedBy string `json:"created_by"`
+		HashKey   string `json:"hash_key"`
 	}
 	var g *response
 
@@ -78,7 +79,7 @@ func (s *Server) HandleSubmitGrant(c *gin.Context) {
 	now := time.Now()
 	UserID := c.Value("userID").(string)
 
-	if err := s.store.Grants().Submit(g.IsActive, UserID, g.HashKey, now); err != nil {
+	if err := s.store.Grants().Submit(g.IsActive, g.CreatedBy, g.HashKey, UserID, now); err != nil {
 		respondWithError(c, http.StatusBadRequest, errBadRequest)
 		return
 	}
@@ -86,6 +87,7 @@ func (s *Server) HandleSubmitGrant(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"is_active":  g.IsActive,
 		"hash_key":   g.HashKey,
+		"created_by": g.CreatedBy,
 		"updated_by": UserID,
 	})
 }

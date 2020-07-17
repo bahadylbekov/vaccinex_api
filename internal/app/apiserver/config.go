@@ -36,9 +36,13 @@ func viperEnvVariable(key string) string {
 
 // NewConfig ...
 func NewConfig() *Config {
-	dbName := viperEnvVariable("POSTGRES_DB")
-	username := viperEnvVariable("POSTGRES_USER")
-	password := viperEnvVariable("POSTGRES_PASSWORD")
+	// dbName := viperEnvVariable("POSTGRES_DB")
+	// username := viperEnvVariable("POSTGRES_USER")
+	// password := viperEnvVariable("POSTGRES_PASSWORD")
+	dbName := "vaccinex_db"
+	username := "hacker"
+	password := "whosyourdaddy"
+
 	pg_con_string := fmt.Sprintf("host=localhost user=%s password=%s dbname=%s sslmode=disable", username, password, dbName)
 
 	return &Config{

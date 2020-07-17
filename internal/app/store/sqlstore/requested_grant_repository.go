@@ -37,14 +37,15 @@ func (r *RequestedGrantsRepository) Create(grant *model.RequestedGrant, now time
 }
 
 // Submit changes is_active value to false
-func (r *RequestedGrantsRepository) Submit(is_active bool, updated_by string, hash_key string, now time.Time) error {
+func (r *RequestedGrantsRepository) Submit(is_active bool, created_by string, hash_key string, updated_by string, now time.Time) error {
 
 	_, err := r.store.db.NamedExec(`UPDATE requested_grants 
 	SET is_active=:is_active, updated_by=:updated_by, updated_at=:updated_at
-	WHERE (created_by=:updated_by AND hash_key=:hash_key)`,
+	WHERE (created_by=:created_by AND hash_key=:hash_key)`,
 		map[string]interface{}{
 			"is_active":  is_active,
 			"updated_by": updated_by,
+			"created_by": created_by,
 			"hash_key":   hash_key,
 			"updated_at": now,
 		})
